@@ -1,24 +1,42 @@
 import 'package:flutter/material.dart';
+import '../canvas_controller.dart';
 import '../main.dart';
+
+enum TableShape {
+  rectangle,
+  circle,
+}
 
 class TableData {
   Size? size;
   Offset? offset;
-
+  String? tableName;
+  TableShape? shape;
   final UniqueKey key;
+  bool? isSelected;
 
   Offset get getOffset => offset!;
   Size get getSize => size!;
+  String get getTableName => tableName!;
+  TableShape get getShape => shape!;
+  bool get getIsSelected => isSelected!;
 
   TableData copyWith({
-    Size? size,
+    double? width,
+    double? height,
     Offset? offset,
     UniqueKey? key,
+    String? tableName,
+    TableShape? shape,
+    bool? isSelected,
   }) {
     return TableData(
-      size: size ?? this.size,
+      size: Size(width ?? size!.width, height ?? size!.height),
       offset: offset ?? this.offset,
       key: key ?? this.key,
+      tableName: tableName ?? this.tableName,
+      shape: shape ?? this.shape,
+      isSelected: isSelected ?? this.isSelected,
     );
   }
 
@@ -32,17 +50,29 @@ class TableData {
       ),
       size: size,
       key: key,
+      tableName: tableName,
+      shape: shape,
+      isSelected: isSelected,
     );
   }
 
-  TableData({this.size, this.offset, required this.key}) {
+  TableData(
+      {this.size,
+      this.offset,
+      required this.key,
+      required this.tableName,
+      required this.shape,
+      required this.isSelected}) {
     size ??= Constants.defaultContainerSize;
     offset ??= const Offset(0, 0);
+    tableName ??= 'Table ${key.toString()}';
+    shape ??= TableShape.rectangle;
+    isSelected ??= false;
   }
 
   @override
   String toString() {
-    return 'TableData(size: $size, offset: $offset, key: $key)';
+    return 'TableData(size: $size, offset: $offset, key: $key, tableName: $tableName, shape: $shape, isSelected: $isSelected)';
   }
 }
 
@@ -56,31 +86,51 @@ class TableController extends ValueNotifier<TableData> {
   /// Use offset parameter to assign initial position of the widget
   ///
   /// but using Offset(dx, dy) where dx and dy is Flutter offset.
-  TableController({Size? size, Offset? offset, Offset? coordinates})
+  TableController(
+      {Size? size,
+      Offset? offset,
+      Offset? coordinates,
+      String? tableName,
+      TableShape? shape,
+      bool? isSelected})
       : super(
           coordinates != null
               ? TableData(
+                  tableName: tableName,
                   key: UniqueKey(),
                   offset: offset,
+                  shape: shape,
+                  isSelected: isSelected,
                 ).fromIndex(coordinates: coordinates)
               : TableData(
+                  tableName: tableName,
                   size: size,
                   offset: offset,
                   key: UniqueKey(),
+                  shape: shape,
+                  isSelected: isSelected,
                 ),
-        ) {
-    print("TableController constructor");
-    print("TableController constructor: ${value}");
-  }
+        );
 
   Size get getSize => value.size!;
   Offset get getOffset => value.offset!;
-  set setSize(Size size) => value = value.copyWith(size: size);
+
+  bool get getIsSelected => value.isSelected!;
+  TableShape get getShape => value.shape!;
+  String get getTableName => value.tableName!;
+
   set setOffset(Offset offset) => value = value.copyWith(offset: offset);
 
+  void setSize({double? width, double? height}) {
+    value = value.copyWith(width: width, height: height);
+    CanvasController.to.update();
+  }
+
+  set setIsSelected(bool isSelected) =>
+      value = value.copyWith(isSelected: isSelected);
   void changePosition(Offset o) {
-    Offset off = Offset(o.dx - Constants.defaultScreenPadding,
-        o.dy - Constants.defaultScreenPadding);
+    Offset off = Offset(o.dx - Constants.defaultCanvasPadding,
+        o.dy - Constants.defaultCanvasPadding);
     final yRemainder = off.dy % Constants.defaultGridCellSize.height;
     final xRemainder = off.dx % Constants.defaultGridCellSize.width;
     final halfCell = Constants.defaultGridCellSize.width / 2;
