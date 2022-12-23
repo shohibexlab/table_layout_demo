@@ -15,12 +15,16 @@ class GridCanvas extends StatelessWidget {
         child: DecoratedBox(
           decoration: const BoxDecoration(
             color: Colors.white,
+            // image: DecorationImage(
+            //   image: AssetImage('assets/images/room.png'),
+            //   fit: BoxFit.cover,
+            // ),
           ),
           child: GridPaper(
             divisions: 2,
-            color: Colors.black26,
+            color: Colors.transparent, //black12
             interval: Constants.defaultGridInterval,
-            subdivisions: 5,
+            subdivisions: Constants.defaultGridSubdivision,
             child: Stack(
               children: [
                 if (ctr.tables.isEmpty)
@@ -29,6 +33,7 @@ class GridCanvas extends StatelessWidget {
                     'Add tables',
                     style: Theme.of(context).textTheme.headline1,
                   )),
+                //Handles the outside click to deselect the selected table
                 GestureDetector(
                     onTap: ctr.clearSelectedTable,
                     child: Container(color: Colors.transparent)),

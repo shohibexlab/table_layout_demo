@@ -15,7 +15,8 @@ class GeneralTableController extends GetxController {
         if (width.isNotEmpty && width != "0") {
           widthTEC.text = width;
         } else if (getSelectedTable != null && width == "0") {
-          widthTEC.text = getSelectedTable.controller.getSize.width.toString();
+          widthTEC.text =
+              getSelectedTable.controller.getSizeAsCellIndex.width.toString();
         }
       }
       if (height != null) {
@@ -23,10 +24,14 @@ class GeneralTableController extends GetxController {
           heightTEC.text = height;
         } else if (getSelectedTable != null && height == "0") {
           heightTEC.text =
-              getSelectedTable.controller.getSize.height.toString();
+              getSelectedTable.controller.getSizeAsCellIndex.height.toString();
         }
       }
+
+      print("widthTEC.text: ${widthTEC.text}");
+      print("heightTEC.text: ${heightTEC.text}");
       getSelectedTable?.controller.setSize(
+          isAsCellIndex: true,
           height: double.parse(heightTEC.text),
           width: double.parse(widthTEC.text));
       CanvasController.to

@@ -19,12 +19,13 @@ class Homepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.black12,
       body: Row(
         children: [
           Container(
             padding: const EdgeInsets.all(Constants.defaultCanvasPadding),
-            width: MediaQuery.of(context).size.width - 300,
+            width: MediaQuery.of(context).size.width -
+                Constants.defaultSidebarWidth,
             height: MediaQuery.of(context).size.height,
             child: const GridCanvas(),
           ),

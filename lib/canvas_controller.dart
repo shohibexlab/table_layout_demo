@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:table_layout_demo/constants.dart';
 import 'package:table_layout_demo/table/table_controller.dart';
 import 'package:table_layout_demo/table/table_widget.dart';
+import 'package:table_layout_demo/utils.dart';
 
 class CanvasController extends GetxController {
   static CanvasController get to => Get.find();
@@ -27,7 +28,7 @@ class CanvasController extends GetxController {
     }
     _setSelectedTable = ctr;
     _tables.add(TableWidget(controller: ctr));
-    selectTable(ctr);
+    selectTable(ctr, swap: false);
     update([
       Constants.defaultGridConstants.gridCanvasId,
       Constants.defaultGridConstants.gridSidebarBarTableListId
@@ -73,10 +74,22 @@ class CanvasController extends GetxController {
     }
   }
 
-  void selectTable(TableController ctr) {
+  void selectTable(TableController ctr, {bool swap = true}) {
     _setSelectedTable = ctr;
-    heightTEC.text = ctr.getSize.height.toString();
-    widthTEC.text = ctr.getSize.width.toString();
+    heightTEC.text = ctr.getSizeAsCellIndex.height.toString();
+    widthTEC.text = ctr.getSizeAsCellIndex.width.toString();
+    // if (swap && tables.length >= 2) {
+    //   final indexOf1 = tables.indexOf(tables.firstWhere(
+    //       (element) => element.controller.value.key == ctr.value.key));
+    //   print('indexOf1: $indexOf1');
+    //   if (getSelectedTable != null &&
+    //       tables.indexOf(tables.firstWhere((element) =>
+    //               element.controller.value.key == ctr.value.key)) !=
+    //           0) {
+    //     List<TableWidget> l = Utils.swapList<TableWidget>(tables, 1, 0);
+    //     _tables.assignAll(l);
+    //   }
+    // }
     update([
       Constants.defaultGridConstants.gridCanvasId,
       Constants.defaultGridConstants.gridCanvasTableId,

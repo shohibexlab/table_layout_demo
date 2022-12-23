@@ -99,23 +99,11 @@ class SidebarWidget extends StatelessWidget {
           controller.getSelectedTable?.controller.getTableShape == shape;
       final decoration = BoxDecoration(
         color: isSelected ? Colors.lightBlueAccent : Colors.white,
-        border: Border.all(color: Colors.black, width: isSelected ? 2 : 1),
+        border: Border.all(color: Colors.black, width: isSelected ? 1 : 1),
       );
       switch (shape) {
         case TableShape.rectangle:
-          return GestureDetector(
-            onTap: onTap,
-            child: Container(
-              decoration: decoration,
-              padding: const EdgeInsets.all(5),
-              child: const SizedBox(
-                width: 50,
-                height: 30,
-              ),
-            ),
-          );
-        case TableShape.circle:
-          return GestureDetector(
+          return InkWell(
             onTap: onTap,
             child: Container(
               decoration: decoration,
@@ -124,6 +112,23 @@ class SidebarWidget extends StatelessWidget {
                 width: 50,
                 height: 30,
                 decoration: BoxDecoration(
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black),
+                ),
+              ),
+            ),
+          );
+        case TableShape.circle:
+          return InkWell(
+            onTap: onTap,
+            child: Container(
+              decoration: decoration,
+              padding: const EdgeInsets.all(5),
+              child: Container(
+                width: 50,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.white,
                   border: Border.all(color: Colors.black),
                   borderRadius: const BorderRadius.all(Radius.circular(18)),
                 ),
@@ -230,20 +235,6 @@ class SidebarWidget extends StatelessWidget {
               fontSize: 11,
             ),
           )),
-    );
-    return GestureDetector(
-      onTap: () {
-        CanvasController.to.addTable(TableController(tableName: title));
-      },
-      child: Container(
-        width: 80,
-        height: 70,
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueGrey),
-          color: Colors.black12,
-        ),
-        child: Center(child: Text(title)),
-      ),
     );
   }
 }

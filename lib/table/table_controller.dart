@@ -172,6 +172,11 @@ class TableController extends ValueNotifier<TableData> {
         );
 
   Size get getSize => value.size!;
+  Size get getSizeAsCellIndex => Size(
+        getSize.width / Constants.defaultGridCellSize.width,
+        getSize.height / Constants.defaultGridCellSize.height,
+      );
+
   Offset get getOffset => value.offset!;
 
   bool get getIsSelected => value.getIsSelected;
@@ -184,8 +189,15 @@ class TableController extends ValueNotifier<TableData> {
   set setIsSelected(bool isSelected) =>
       value = value.copyWith(isSelected: isSelected);
 
-  void setSize({double? width, double? height}) {
-    value = value.copyWith(width: width, height: height);
+  void setSize({double? width, double? height, bool isAsCellIndex = false}) {
+    if (isAsCellIndex) {
+      value = value.copyWith(
+        width: width! * Constants.defaultGridCellSize.width,
+        height: height! * Constants.defaultGridCellSize.height,
+      );
+    } else {
+      value = value.copyWith(width: width, height: height);
+    }
   }
 
   void changeShape(TableShape shape) {

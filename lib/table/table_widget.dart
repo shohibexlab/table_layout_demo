@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_layout_demo/canvas_controller.dart';
@@ -25,7 +24,6 @@ class TableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(controller.toString());
     return GetBuilder<CanvasController>(
         id: Constants.defaultGridConstants.gridCanvasTableId,
         builder: (ctr) {

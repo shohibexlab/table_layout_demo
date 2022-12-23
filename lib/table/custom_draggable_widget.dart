@@ -11,7 +11,7 @@ class CustomDraggableWidget extends StatelessWidget {
     bool isSelected = table.controller.getIsSelected;
     if (isSelected) {
       return Draggable(
-          onDraggableCanceled: (__, offset) => onDraggableCanceled(offset),
+          onDragEnd: onDragEnd,
           onDragStarted: onDragStarted,
           feedback: Material(color: Colors.transparent, child: table),
           child: table);
@@ -29,7 +29,7 @@ class CustomDraggableWidget extends StatelessWidget {
 
   void onDragStarted() {}
 
-  void onDraggableCanceled(Offset o, {Velocity? v}) {
-    table.controller.changePosition(o);
+  void onDragEnd(DraggableDetails o) {
+    table.controller.changePosition(o.offset);
   }
 }
