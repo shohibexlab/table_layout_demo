@@ -87,6 +87,7 @@ class CanvasController extends GetxController {
         _tables.assignAll(l);
       }
     }
+    print("Selected table: ${ctr.toString()}");
     update([
       Constants.defaultGridConstants.gridCanvasId,
       Constants.defaultGridConstants.gridCanvasTableId,

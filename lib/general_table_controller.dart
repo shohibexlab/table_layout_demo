@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:get/get.dart';
 import 'package:table_layout_demo/canvas_controller.dart';
 import 'package:table_layout_demo/table/table_controller.dart';
@@ -20,6 +22,7 @@ class GeneralTableController extends GetxController {
         }
         getSelectedTable.controller.setSize(height: height, width: width);
         CanvasController.to.heightTEC.text = height.toString();
+
         CanvasController.to
             .update([Constants.defaultGridConstants.gridCanvasTableId]);
       }
@@ -75,8 +78,9 @@ class GeneralTableController extends GetxController {
         }
       }
 
-      print("widthTEC.text: ${widthTEC.text}");
-      print("heightTEC.text: ${heightTEC.text}");
+      // print("widthTEC.text: ${widthTEC.text}");
+      // print("heightTEC.text: ${heightTEC.text}");
+      // print("Offset: ${getSelectedTable?.controller.getOffsetAsCellIndex}");
       getSelectedTable?.controller.setSize(
           isAsCellIndex: true,
           height: double.parse(heightTEC.text),
@@ -90,6 +94,7 @@ class GeneralTableController extends GetxController {
     final getSelectedTable = CanvasController.to.getSelectedTable;
     if (getSelectedTable != null) {
       getSelectedTable.controller.changeShape(shape);
+
       CanvasController.to.update([
         Constants.defaultGridConstants.gridCanvasTableId,
         Constants.defaultGridConstants.gridSidebarTablePropsId,

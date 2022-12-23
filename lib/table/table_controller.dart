@@ -173,19 +173,18 @@ class TableController extends ValueNotifier<TableData> {
 
   Size get getSize => value.size!;
   Size get getSizeAsCellIndex => Size(
-        getSize.width / Constants.defaultGridCellSize.width,
-        getSize.height / Constants.defaultGridCellSize.height,
-      );
-
+      getSize.width / Constants.defaultGridCellSize.width,
+      getSize.height / Constants.defaultGridCellSize.height);
   Offset get getOffset => value.offset!;
-
+  Offset get getOffsetAsCellIndex => Offset(
+      getOffset.dx / Constants.defaultGridCellSize.width,
+      getOffset.dy / Constants.defaultGridCellSize.height);
   bool get getIsSelected => value.getIsSelected;
   String get getTableName => value.tableName!;
   TableDecoration get getTableDecoration => value.tableDecoration!;
   TableShape get getTableShape => value.tableDecoration!.tableShape!;
 
   set setOffset(Offset offset) => value = value.copyWith(offset: offset);
-
   set setIsSelected(bool isSelected) =>
       value = value.copyWith(isSelected: isSelected);
 
@@ -231,6 +230,7 @@ class TableController extends ValueNotifier<TableData> {
       }
       off = Offset(off.dx, dy);
     }
+
     setOffset = off;
     CanvasController.to.update([
       Constants.defaultGridConstants.gridCanvasId,
