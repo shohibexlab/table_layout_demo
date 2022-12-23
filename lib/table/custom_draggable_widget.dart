@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:table_layout_demo/canvas_controller.dart';
 import 'package:table_layout_demo/table/table_widget.dart';
 
 class CustomDraggableWidget extends StatelessWidget {
@@ -9,21 +8,28 @@ class CustomDraggableWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Draggable(
-        onDraggableCanceled: onDraggableCanceled,
-        onDragStarted: onDragStarted,
-        feedback: Container(
-          width: table.controller.getSize.width,
-          height: table.controller.getSize.height,
-          color: Colors.blueGrey.withOpacity(0.5),
-        ),
-        child: table);
+    bool isSelected = table.controller.getIsSelected;
+    if (isSelected) {
+      return Draggable(
+          onDraggableCanceled: (__, offset) => onDraggableCanceled(offset),
+          onDragStarted: onDragStarted,
+          feedback: Material(color: Colors.transparent, child: table),
+          child: table);
+    } else {
+      return GestureDetector(
+          onPanStart: (details) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                duration: Duration(seconds: 5),
+                content: Text(
+                    "You can only drag selected tables. Please select the table first.")));
+          },
+          child: table);
+    }
   }
 
   void onDragStarted() {}
 
-  void onDraggableCanceled(Velocity v, Offset o) {
+  void onDraggableCanceled(Offset o, {Velocity? v}) {
     table.controller.changePosition(o);
-    CanvasController.to.update();
   }
 }

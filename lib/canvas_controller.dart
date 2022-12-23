@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_layout_demo/constants.dart';
 import 'package:table_layout_demo/table/table_controller.dart';
 import 'package:table_layout_demo/table/table_widget.dart';
 
@@ -17,16 +18,6 @@ class CanvasController extends GetxController {
     return t;
   }
 
-  set setSelectedTable(TableController value) {
-    for (final table in tables) {
-      if (table.controller.getIsSelected) {
-        table.controller.setIsSelected = false;
-      }
-    }
-    value.setIsSelected = true;
-    update();
-  }
-
   final RxList<TableWidget> _tables = <TableWidget>[].obs;
   List<TableWidget> get tables => _tables;
 
@@ -34,28 +25,69 @@ class CanvasController extends GetxController {
     for (var element in tables) {
       element.controller.setIsSelected = false;
     }
-    setSelectedTable = ctr;
+    _setSelectedTable = ctr;
     _tables.add(TableWidget(controller: ctr));
     selectTable(ctr);
+    update([
+      Constants.defaultGridConstants.gridCanvasId,
+      Constants.defaultGridConstants.gridSidebarBarTableListId
+    ]);
   }
 
   void removeTable() {
     _tables.removeWhere((element) =>
         element.controller.value.key == getSelectedTable?.controller.value.key);
-    update();
+    heightTEC.clear();
+    widthTEC.clear();
+    update([
+      Constants.defaultGridConstants.gridCanvasId,
+      Constants.defaultGridConstants.gridSidebarBarTableListId,
+      Constants.defaultGridConstants.gridSidebarTablePropsId,
+    ]);
+  }
+
+  set _setSelectedTable(TableController value) {
+    for (final table in tables) {
+      if (table.controller.getIsSelected) {
+        table.controller.setIsSelected = false;
+      }
+    }
+    value.setIsSelected = true;
+  }
+
+  void clearSelectedTable() {
+    if (tables.isNotEmpty) {
+      for (final table in tables) {
+        if (table.controller.getIsSelected) {
+          table.controller.setIsSelected = false;
+        }
+      }
+      heightTEC.clear();
+      widthTEC.clear();
+      update([
+        Constants.defaultGridConstants.gridCanvasId,
+        Constants.defaultGridConstants.gridCanvasTableId,
+        Constants.defaultGridConstants.gridSidebarTablePropsId,
+        Constants.defaultGridConstants.gridSidebarBarTableListId,
+      ]);
+    }
   }
 
   void selectTable(TableController ctr) {
-    setSelectedTable = ctr;
-    print('selectTable: ${getSelectedTable?.controller.toString()}');
+    _setSelectedTable = ctr;
     heightTEC.text = ctr.getSize.height.toString();
     widthTEC.text = ctr.getSize.width.toString();
-    update(['canvas']);
+    update([
+      Constants.defaultGridConstants.gridCanvasId,
+      Constants.defaultGridConstants.gridCanvasTableId,
+      Constants.defaultGridConstants.gridSidebarTablePropsId,
+    ]);
   }
 
   @override
   void onReady() {
     super.onReady();
+
     heightTEC.addListener(() {
       if (heightTEC.text.endsWith(".0")) {
         heightTEC.text = heightTEC.text.substring(0, heightTEC.text.length - 2);
