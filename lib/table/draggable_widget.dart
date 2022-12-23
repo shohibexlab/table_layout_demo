@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:indexed/indexed.dart';
+import 'package:table_layout_demo/canvas_controller.dart';
 import 'package:table_layout_demo/table/table_widget.dart';
 
-class CustomDraggableWidget extends StatelessWidget {
+class DraggableWidget extends StatelessWidget with IndexedInterface {
   final TableWidget table;
-  const CustomDraggableWidget({Key? key, required this.table})
-      : super(key: key);
+  const DraggableWidget({Key? key, required this.table}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,5 +32,11 @@ class CustomDraggableWidget extends StatelessWidget {
 
   void onDragEnd(DraggableDetails o) {
     table.controller.changePosition(o.offset);
+  }
+
+  @override
+  int get index {
+    print(CanvasController.to.tables.indexOf(table));
+    return CanvasController.to.tables.indexOf(table);
   }
 }

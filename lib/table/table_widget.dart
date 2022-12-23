@@ -44,9 +44,25 @@ class TableWidget extends StatelessWidget {
                   ),
                   height: controller.getSize.height,
                   width: controller.getSize.width,
-                  child: Center(
-                      child: Text(tableName,
-                          style: controller.getTableDecoration.getTextStyle))),
+                  child: Stack(
+                    children: [
+                      // Positioned(
+                      //     child: Center(
+                      //   child: Container(
+                      //     width: 10,
+                      //     height: 10,
+                      //     decoration: BoxDecoration(
+                      //       shape: BoxShape.circle,
+                      //       color: Colors.red,
+                      //     ),
+                      //   ),
+                      // )),
+                      Center(
+                          child: Text(tableName,
+                              style:
+                                  controller.getTableDecoration.getTextStyle)),
+                    ],
+                  )),
             ),
           );
         });

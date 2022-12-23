@@ -78,18 +78,15 @@ class CanvasController extends GetxController {
     _setSelectedTable = ctr;
     heightTEC.text = ctr.getSizeAsCellIndex.height.toString();
     widthTEC.text = ctr.getSizeAsCellIndex.width.toString();
-    // if (swap && tables.length >= 2) {
-    //   final indexOf1 = tables.indexOf(tables.firstWhere(
-    //       (element) => element.controller.value.key == ctr.value.key));
-    //   print('indexOf1: $indexOf1');
-    //   if (getSelectedTable != null &&
-    //       tables.indexOf(tables.firstWhere((element) =>
-    //               element.controller.value.key == ctr.value.key)) !=
-    //           0) {
-    //     List<TableWidget> l = Utils.swapList<TableWidget>(tables, 1, 0);
-    //     _tables.assignAll(l);
-    //   }
-    // }
+    if (swap && tables.length >= 2) {
+      final indexOf1 = tables.indexOf(tables.firstWhere(
+          (element) => element.controller.value.key == ctr.value.key));
+      if (getSelectedTable != null) {
+        List<TableWidget> l =
+            Utils.swapList<TableWidget>(tables, indexOf1, tables.length - 1);
+        _tables.assignAll(l);
+      }
+    }
     update([
       Constants.defaultGridConstants.gridCanvasId,
       Constants.defaultGridConstants.gridCanvasTableId,
