@@ -99,7 +99,7 @@ class TableData {
       required this.isSelected,
       this.tableDecoration,
       required this.tableId}) {
-    size ??= Constants.defaultTableSize;
+    size ??= GridSettingsConstants.defaultTableSize;
     offset ??= const Offset(0, 0);
     tableName ??= 'Table ${key.toString()}';
     isSelected ??= false;
@@ -162,13 +162,96 @@ class TableController extends ValueNotifier<TableData> {
   void changeSize({double? width, double? height, bool isAsCellIndex = false}) {
     if (isAsCellIndex) {
       value = value.copyWith(
-        width: Constants.defaultGridCellSize.width * width!,
-        height: Constants.defaultGridCellSize.height * height!,
+        width: GridSettingsConstants.defaultGridCellSize.width * width!,
+        height: GridSettingsConstants.defaultGridCellSize.height * height!,
       );
     } else {
       value = value.copyWith(width: width, height: height);
     }
     CanvasController.to.update([GridConstants.gridCanvasTableId]);
+  }
+
+  Offset get getCenterOffset {
+    return Offset(
+      CanvasController.to.getLeftTopCorner.dx + getSize.width / 2,
+      CanvasController.to.getLeftTopCorner.dy + getSize.height / 2,
+    );
+  }
+
+  Offset get getLeftTopCorner {
+    return Offset(
+      getOffset.dx + CanvasController.to.getLeftTopCorner.dx,
+      getOffset.dy + CanvasController.to.getLeftTopCorner.dy,
+    );
+  }
+
+  Offset get getRightTopCorner {
+    return Offset(
+      getOffset.dx + getSize.width + CanvasController.to.getLeftTopCorner.dx,
+      getOffset.dy + CanvasController.to.getLeftTopCorner.dy,
+    );
+  }
+
+  Offset get getLeftBottomCorner {
+    return Offset(
+      getOffset.dx + CanvasController.to.getLeftTopCorner.dx,
+      getOffset.dy + getSize.height + CanvasController.to.getLeftTopCorner.dy,
+    );
+  }
+
+  bool get isTouchingCanvasLeft {
+    return getOffset.dx == 0.0;
+  }
+
+  bool get isTouchingCanvasTop {
+    return getOffset.dy == 0.0;
+  }
+
+  bool get isTouchingCanvasRight {
+    return getOffset.dx + getSize.width ==
+        GlobalKeyConstants.canvasGridKey.getSize!.width;
+  }
+
+  bool get isTouchingCanvasBottom {
+    return getOffset.dy + getSize.height ==
+        GlobalKeyConstants.canvasGridKey.getSize!.height;
+  }
+
+  void moveToTopRight() {
+    setOffset = Offset(
+        GlobalKeyConstants.canvasGridKey.getSize!.width - getSize.width, 0);
+    CanvasController.to
+        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+  }
+
+  void moveToTopLeft() {
+    setOffset = const Offset(0, 0);
+    CanvasController.to
+        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+  }
+
+  void moveToBottomRight() {
+    setOffset = Offset(
+        GlobalKeyConstants.canvasGridKey.getSize!.width - getSize.width,
+        GlobalKeyConstants.canvasGridKey.getSize!.height - getSize.height);
+    CanvasController.to
+        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+  }
+
+  void moveToBottomLeft() {
+    setOffset = Offset(
+        0, GlobalKeyConstants.canvasGridKey.getSize!.height - getSize.height);
+    CanvasController.to
+        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+  }
+
+  void moveToCenter() {
+    setOffset = Offset(
+        GlobalKeyConstants.canvasGridKey.getSize!.width / 2 - getSize.width / 2,
+        GlobalKeyConstants.canvasGridKey.getSize!.height / 2 -
+            getSize.height / 2);
+    CanvasController.to
+        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
   }
 
   void changeShape(TableShape shape) {
@@ -186,14 +269,18 @@ class TableController extends ValueNotifier<TableData> {
     if (canvasPosition != null) {
       Offset off = Offset(o.dx - canvasPosition.dx, o.dy - canvasPosition.dy);
 
-      final yRemainder = (off.dy % Constants.defaultGridCellSize.height);
-      final xRemainder = (off.dx % Constants.defaultGridCellSize.width);
+      print("Initial Offset: $off");
+      final yRemainder =
+          (off.dy % GridSettingsConstants.defaultGridCellSize.height);
+      final xRemainder =
+          (off.dx % GridSettingsConstants.defaultGridCellSize.width);
 
-      final halfCell = Constants.defaultGridCellSize.width / 2;
+      final halfCell = GridSettingsConstants.defaultGridCellSize.width / 2;
       if (xRemainder != 0) {
         double dx = off.dx;
         if (halfCell < xRemainder) {
-          final temp = Constants.defaultGridCellSize.width - xRemainder;
+          final temp =
+              GridSettingsConstants.defaultGridCellSize.width - xRemainder;
           dx += temp;
         } else if (halfCell > xRemainder) {
           final temp = halfCell - xRemainder;
@@ -205,7 +292,8 @@ class TableController extends ValueNotifier<TableData> {
       if (yRemainder != 0) {
         double dy = off.dy;
         if (halfCell < yRemainder) {
-          final temp = Constants.defaultGridCellSize.width - yRemainder;
+          final temp =
+              GridSettingsConstants.defaultGridCellSize.width - yRemainder;
           dy += temp;
         } else if (halfCell > yRemainder) {
           final temp = halfCell - yRemainder;
@@ -213,6 +301,30 @@ class TableController extends ValueNotifier<TableData> {
           // dy -= yRemainder;
         }
         off = Offset(off.dx, dy);
+      }
+
+      print("Final Offset: $off");
+      //Check if the table goes off Canvas boundaries
+      if (!GridSettingsConstants.canItemGoOffCanvasBoundaries) {
+        //Left
+        if (off.dx < 0) off = Offset(0, off.dy);
+        //Top
+        if (off.dy < 0) off = Offset(off.dx, 0);
+        //Right
+        if (off.dx + getSize.width >
+            GlobalKeyConstants.canvasGridKey.getSize!.width) {
+          off = Offset(
+              GlobalKeyConstants.canvasGridKey.getSize!.width - getSize.width,
+              off.dy);
+        }
+        //Bottom
+        if (off.dy + getSize.height >
+            GlobalKeyConstants.canvasGridKey.getSize!.height) {
+          off = Offset(
+              off.dx,
+              GlobalKeyConstants.canvasGridKey.getSize!.height -
+                  getSize.height);
+        }
       }
       setOffset = off;
 

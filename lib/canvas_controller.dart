@@ -9,6 +9,46 @@ class CanvasController extends GetxController {
   static CanvasController get to => Get.find();
   final TextEditingController heightTEC = TextEditingController();
   final TextEditingController widthTEC = TextEditingController();
+
+  bool get isTableTouchingCanvasLeft {
+    return getSelectedTable?.controller.isTouchingCanvasLeft ?? false;
+  }
+
+  void moveTableToCanvasRightCorner() {}
+
+  Offset get getLeftTopCorner {
+    return GlobalKeyConstants.canvasGridKey.getPosition ?? Offset.zero;
+  }
+
+  Offset get getRightTopCorner {
+    return Offset(
+      getLeftTopCorner.dx +
+          GridSettingsConstants.defaultGridCellSize.width *
+              GridSettingsConstants.defaultGridCells.dx,
+      getLeftTopCorner.dy,
+    );
+  }
+
+  Offset get geLeftBottomCorner {
+    return Offset(
+      getLeftTopCorner.dx,
+      getLeftTopCorner.dy +
+          GridSettingsConstants.defaultGridCellSize.height *
+              GridSettingsConstants.defaultGridCells.dy,
+    );
+  }
+
+  Offset get getRightBottomCorner {
+    return Offset(
+      getLeftTopCorner.dx +
+          GridSettingsConstants.defaultGridCellSize.width *
+              GridSettingsConstants.defaultGridCells.dx,
+      getLeftTopCorner.dy +
+          GridSettingsConstants.defaultGridCellSize.height *
+              GridSettingsConstants.defaultGridCells.dy,
+    );
+  }
+
   TableWidget? get getSelectedTable {
     TableWidget? t;
     for (final table in tables) {

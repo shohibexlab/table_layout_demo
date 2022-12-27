@@ -19,97 +19,95 @@ class GridCanvas extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetBuilder<CanvasController>(
       id: GridConstants.gridCanvasId,
-      builder: (ctr) => InteractiveViewer(
-        child: GridPaper(
-          key: GlobalKeyConstants.canvasGridKey,
-          divisions: 2,
-          color: GridDecorations.defaultGridColor,
-          interval: Constants.defaultGridInterval,
-          subdivisions: Constants.defaultGridSubdivision,
-          child: Container(
-            color: GridDecorations.defaultBackgroundColor,
-            child: Stack(
-              children: [
-                if (ctr.tables.isEmpty)
-                  Center(
-                      child: Text(
-                    'Add tables',
-                    style: Theme.of(context).textTheme.headline1,
-                  )),
-                //Handles the outside click to deselect the selected table
-                GestureDetector(
-                    onTap: ctr.clearSelectedTable,
-                    child: Container(color: Colors.transparent)),
-                for (var table in ctr.tables)
-                  Stack(
-                    children: [
-                      Positioned(
-                          top: table.controller.getOffset.dy,
-                          left: table.controller.getOffset.dx,
-                          child: DraggableWidget(table: table)),
-                      Positioned(
-                          top: table.controller.getOffset.dy - 10,
-                          left: table.controller.getOffset.dx -
-                              10 +
-                              table.controller.getSize.width / 2,
-                          child: GestureDetector(
-                              onVerticalDragUpdate: (details) {
-                                const subtract = 10;
-                                final lcPosition = details.localPosition;
-                                Offset wentUpTo = Offset(lcPosition.dx,
-                                        (lcPosition.dy - subtract).abs())
-                                    .toCellIndex;
+      builder: (ctr) => GridPaper(
+        key: GlobalKeyConstants.canvasGridKey,
+        divisions: 1,
+        color: GridDecorations.defaultGridColor,
+        interval: GridSettingsConstants.defaultGridInterval,
+        subdivisions: GridSettingsConstants.defaultGridSubdivision,
+        child: ColoredBox(
+          color: GridDecorations.defaultBackgroundColor,
+          child: Stack(
+            children: [
+              if (ctr.tables.isEmpty)
+                Center(
+                    child: Text(
+                  'Add tables',
+                  style: Theme.of(context).textTheme.headline1,
+                )),
+              //Handles the outside click to deselect the selected table
+              GestureDetector(
+                  onTap: ctr.clearSelectedTable,
+                  child: Container(color: Colors.transparent)),
+              for (var table in ctr.tables)
+                Stack(
+                  children: [
+                    Positioned(
+                        top: table.controller.getOffset.dy,
+                        left: table.controller.getOffset.dx,
+                        child: DraggableWidget(table: table)),
+                    Positioned(
+                        top: table.controller.getOffset.dy - 10,
+                        left: table.controller.getOffset.dx -
+                            10 +
+                            table.controller.getSize.width / 2,
+                        child: GestureDetector(
+                            onVerticalDragUpdate: (details) {
+                              const subtract = 10;
+                              final lcPosition = details.localPosition;
+                              Offset wentUpTo = Offset(lcPosition.dx,
+                                      (lcPosition.dy - subtract).abs())
+                                  .toCellIndex;
 
-                                bool isGoingUp = details.delta.dy < 0;
-                                if (details.delta.dy == 0.0) {
-                                  return;
-                                }
-                                DragDirection newDragDir = dragDirection;
-                                if (newDragDir == DragDirection.none) {
-                                  if (isGoingUp) {
-                                    newDragDir = DragDirection.up;
-                                  } else {
-                                    newDragDir = DragDirection.down;
-                                  }
-                                  dragDirection = newDragDir;
-                                  return;
-                                }
+                              bool isGoingUp = details.delta.dy < 0;
+                              if (details.delta.dy == 0.0) {
+                                return;
+                              }
+                              DragDirection newDragDir = dragDirection;
+                              if (newDragDir == DragDirection.none) {
                                 if (isGoingUp) {
                                   newDragDir = DragDirection.up;
                                 } else {
                                   newDragDir = DragDirection.down;
                                 }
+                                dragDirection = newDragDir;
+                                return;
+                              }
+                              if (isGoingUp) {
+                                newDragDir = DragDirection.up;
+                              } else {
+                                newDragDir = DragDirection.down;
+                              }
 
-                                if (newDragDir != dragDirection) {
-                                  dragDirection = newDragDir;
-                                  print("Direction Changed to $newDragDir");
-                                  // oldDy = 0;
-                                  reversed = true;
-                                  _handleDirChange(table, wentUpTo);
-                                } else {
-                                  _handleResize(table, wentUpTo);
-                                }
-                              },
-                              onTap: () {
-                                final RenderBox? renderBox = GlobalKeyConstants
-                                    .canvasGridKey.currentContext
-                                    ?.findRenderObject() as RenderBox?;
-                                print(
-                                    "renderBox: ${GlobalKeyConstants.canvasGridKey.getPosition}");
-                              },
-                              onVerticalDragEnd: (details) {
-                                dragDirection = DragDirection.none;
-                                oldDy = 0;
-                                reversed = false;
-                                reversedAt = 0;
-                              },
-                              child: const Icon(
-                                Icons.circle,
-                              ))),
-                    ],
-                  ),
-              ],
-            ),
+                              if (newDragDir != dragDirection) {
+                                dragDirection = newDragDir;
+                                print("Direction Changed to $newDragDir");
+                                // oldDy = 0;
+                                reversed = true;
+                                _handleDirChange(table, wentUpTo);
+                              } else {
+                                _handleResize(table, wentUpTo);
+                              }
+                            },
+                            onTap: () {
+                              final RenderBox? renderBox = GlobalKeyConstants
+                                  .canvasGridKey.currentContext
+                                  ?.findRenderObject() as RenderBox?;
+                              print(
+                                  "renderBox: ${GlobalKeyConstants.canvasGridKey.getPosition}");
+                            },
+                            onVerticalDragEnd: (details) {
+                              dragDirection = DragDirection.none;
+                              oldDy = 0;
+                              reversed = false;
+                              reversedAt = 0;
+                            },
+                            child: const Icon(
+                              Icons.circle,
+                            ))),
+                  ],
+                ),
+            ],
           ),
         ),
       ),

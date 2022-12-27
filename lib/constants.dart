@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:table_layout_demo/utils.dart';
 
 class GlobalKeyConstants {
   static GlobalKey canvasGridKey = GlobalKey(debugLabel: 'CANVAS_GRID_KEY');
 }
 
-class Constants {
+class GridSettingsConstants {
   static const double defaultGridInterval = 100;
+
+  static const bool canItemGoOffCanvasBoundaries = false;
 
   static Offset defaultGridCells =
       const Offset(120, 70); // Number of pixels in the grid x and y

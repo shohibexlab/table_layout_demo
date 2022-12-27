@@ -16,19 +16,20 @@ class Utils {
 }
 
 extension SizeHelpers on Size {
-  Size get toCellIndex => Size(width / Constants.defaultGridCellSize.width,
-      height / Constants.defaultGridCellSize.height);
+  Size get toCellIndex => Size(
+      width / GridSettingsConstants.defaultGridCellSize.width,
+      height / GridSettingsConstants.defaultGridCellSize.height);
 }
 
 extension OffsetHelpers on Offset {
   Offset get toCellIndex {
-    return Offset(dx / Constants.defaultGridCellSize.width,
-        dy / Constants.defaultGridCellSize.height);
+    return Offset(dx / GridSettingsConstants.defaultGridCellSize.width,
+        dy / GridSettingsConstants.defaultGridCellSize.height);
   }
 
   Offset get toOffsetFromCellIndex {
-    final off = Offset(dx * Constants.defaultGridCellSize.width,
-        dy * Constants.defaultGridCellSize.height);
+    final off = Offset(dx * GridSettingsConstants.defaultGridCellSize.width,
+        dy * GridSettingsConstants.defaultGridCellSize.height);
     return off;
   }
 }

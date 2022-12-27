@@ -17,7 +17,7 @@ class SidebarWidget extends StatelessWidget {
         border: Border(left: BorderSide(color: Colors.black)),
         color: Colors.white,
       ),
-      width: Constants.defaultSidebarWidth,
+      width: GridSettingsConstants.defaultSidebarWidth,
       height: MediaQuery.of(context).size.height,
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -67,7 +67,8 @@ class SidebarWidget extends StatelessWidget {
                     ? controller.removeTable
                     : null,
                 style: TextButton.styleFrom(
-                    minimumSize: const Size(Constants.defaultSidebarWidth, 50),
+                    minimumSize: const Size(
+                        GridSettingsConstants.defaultSidebarWidth, 50),
                     side: const BorderSide(
                       color: Colors.blueGrey,
                       width: 1,
