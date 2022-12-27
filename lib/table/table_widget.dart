@@ -8,8 +8,12 @@ import '../constants.dart';
 class TableWidget extends StatelessWidget {
   final TableController controller;
   final VoidCallback? onTap;
-  TableWidget({Key? key, required this.controller, this.onTap})
-      : super(key: key);
+  bool? isDisabled;
+  TableWidget(
+      {Key? key, required this.controller, this.onTap, this.isDisabled = false})
+      : super(key: key) {
+    isDisabled ?? false;
+  }
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -25,59 +29,31 @@ class TableWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<CanvasController>(
-        id: Constants.defaultGridConstants.gridCanvasTableId,
+        id: GridConstants.gridCanvasTableId,
         builder: (ctr) {
           String tableName = controller.getTableName;
-          // if (kDebugMode) {
-          //   tableName += "\nIs Selected: ${controller.getIsSelected}";
-          // }
-          return GestureDetector(
-            onTap: onTap ?? () => CanvasController.to.selectTable(controller),
-            child: SizedBox(
-              width: controller.getSize.width,
-              height: controller.getSize.height,
-              child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: _getRadius(),
-                    color: _getColor(),
-                    border: _getBorder(),
-                  ),
-                  height: controller.getSize.height,
-                  width: controller.getSize.width,
-                  child: Stack(
-                    children: [
-                      // Positioned(
-                      //     child: Center(
-                      //   child: Container(
-                      //     width: 10,
-                      //     height: 10,
-                      //     decoration: BoxDecoration(
-                      //       shape: BoxShape.circle,
-                      //       color: Colors.red,
-                      //     ),
-                      //   ),
-                      // )),
-                      Center(
-                          child: Text(tableName,
-                              style:
-                                  controller.getTableDecoration.getTextStyle)),
-                    ],
-                  )),
+          return InkWell(
+            onTap: isDisabled!
+                ? null
+                : (onTap ?? () => CanvasController.to.selectTable(controller)),
+            child: Opacity(
+              opacity: isDisabled! ? 0.5 : 1,
+              child: SizedBox(
+                width: controller.getSize.height,
+                height: controller.getSize.height,
+                child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: _getRadius(), color: _getColor()),
+                    // height: controller.getSize.height,
+                    // width: controller.getSize.height,
+                    child: Center(
+                        child: Text(tableName,
+                            style:
+                                controller.getTableDecoration.getTextStyle))),
+              ),
             ),
           );
         });
-  }
-
-  Border _getBorder() {
-    bool isSelected = controller.getIsSelected;
-    if (isSelected) {
-      return controller.getTableDecoration.getActiveBorder;
-    } else {
-      return controller.getTableDecoration.getInactiveBorder;
-    }
-    // return controller.getIsSelected
-    //     ? Border.all(color: Colors.blueAccent, width: 2)
-    //     : Border.all(color: Colors.transparent, width: 2);
   }
 
   Color _getColor() {

@@ -22,28 +22,35 @@ class CanvasController extends GetxController {
   final RxList<TableWidget> _tables = <TableWidget>[].obs;
   List<TableWidget> get tables => _tables;
 
+  final RxList<TableController> _usedTables = <TableController>[].obs;
+  List<TableController> get usedTables => _usedTables;
+
+  bool isTableUsed(TableController ctr) {
+    return usedTables.any((element) => element.tableId == ctr.tableId);
+  }
+
   void addTable(TableController ctr) {
     for (var element in tables) {
       element.controller.setIsSelected = false;
     }
-    _setSelectedTable = ctr;
+    _usedTables.add(ctr);
     _tables.add(TableWidget(controller: ctr));
     selectTable(ctr, swap: false);
-    update([
-      Constants.defaultGridConstants.gridCanvasId,
-      Constants.defaultGridConstants.gridSidebarBarTableListId
-    ]);
+    update(
+        [GridConstants.gridCanvasId, GridConstants.gridSidebarBarTableListId]);
   }
 
   void removeTable() {
+    _usedTables.removeWhere(
+        (element) => element.tableId == getSelectedTable?.controller.tableId);
     _tables.removeWhere((element) =>
-        element.controller.value.key == getSelectedTable?.controller.value.key);
+        element.controller.tableId == getSelectedTable?.controller.tableId);
     heightTEC.clear();
     widthTEC.clear();
     update([
-      Constants.defaultGridConstants.gridCanvasId,
-      Constants.defaultGridConstants.gridSidebarBarTableListId,
-      Constants.defaultGridConstants.gridSidebarTablePropsId,
+      GridConstants.gridCanvasId,
+      GridConstants.gridSidebarBarTableListId,
+      GridConstants.gridSidebarTablePropsId,
     ]);
   }
 
@@ -66,53 +73,46 @@ class CanvasController extends GetxController {
       heightTEC.clear();
       widthTEC.clear();
       update([
-        Constants.defaultGridConstants.gridCanvasId,
-        Constants.defaultGridConstants.gridCanvasTableId,
-        Constants.defaultGridConstants.gridSidebarTablePropsId,
-        Constants.defaultGridConstants.gridSidebarBarTableListId,
+        GridConstants.gridCanvasId,
+        GridConstants.gridCanvasTableId,
+        GridConstants.gridSidebarTablePropsId,
+        GridConstants.gridSidebarBarTableListId,
       ]);
     }
   }
 
   void selectTable(TableController ctr, {bool swap = true}) {
     _setSelectedTable = ctr;
-    heightTEC.text = ctr.getSizeAsCellIndex.height.toString();
-    widthTEC.text = ctr.getSizeAsCellIndex.width.toString();
+    heightTEC.text = ctr.getSize.toCellIndex.height.toString();
+    widthTEC.text = ctr.getSize.toCellIndex.width.toString();
     if (swap && tables.length >= 2) {
-      final indexOf1 = tables.indexOf(tables.firstWhere(
-          (element) => element.controller.value.key == ctr.value.key));
+      final indexOf1 = tables.indexOf(tables
+          .firstWhere((element) => element.controller.tableId == ctr.tableId));
       if (getSelectedTable != null) {
         List<TableWidget> l =
             Utils.swapList<TableWidget>(tables, indexOf1, tables.length - 1);
         _tables.assignAll(l);
       }
     }
-    print("Selected table: ${ctr.toString()}");
+    print("selectTable: ${ctr.getSize}");
     update([
-      Constants.defaultGridConstants.gridCanvasId,
-      Constants.defaultGridConstants.gridCanvasTableId,
-      Constants.defaultGridConstants.gridSidebarTablePropsId,
+      GridConstants.gridCanvasId,
+      GridConstants.gridCanvasTableId,
+      GridConstants.gridSidebarTablePropsId,
     ]);
   }
 
   @override
   void onReady() {
     super.onReady();
-
     heightTEC.addListener(() {
       if (heightTEC.text.endsWith(".0")) {
         heightTEC.text = heightTEC.text.substring(0, heightTEC.text.length - 2);
-      }
-      if (heightTEC.text.isEmpty) {
-        heightTEC.text = "0";
       }
     });
     widthTEC.addListener(() {
       if (widthTEC.text.endsWith(".0")) {
         widthTEC.text = widthTEC.text.substring(0, widthTEC.text.length - 2);
-      }
-      if (widthTEC.text.isEmpty) {
-        widthTEC.text = "0";
       }
     });
   }

@@ -18,19 +18,34 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BoxConstraints constraints = BoxConstraints(
+      maxWidth: Get.width,
+      maxHeight: Get.height,
+    );
+    print('Screen size : => ${constraints.maxWidth} ${constraints.maxHeight}');
     return Scaffold(
-      backgroundColor: Colors.black12,
-      body: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(Constants.defaultCanvasPadding),
-            width: MediaQuery.of(context).size.width -
-                Constants.defaultSidebarWidth,
-            height: MediaQuery.of(context).size.height,
-            child: const GridCanvas(),
-          ),
-          const SidebarWidget(),
-        ],
+      backgroundColor: Colors.black26,
+      body: GridPaper(
+        divisions: 2,
+        color: Colors.redAccent.withOpacity(.0),
+        interval: Constants.defaultGridInterval,
+        subdivisions: Constants.defaultGridSubdivision,
+        child: Row(
+          children: [
+            Expanded(
+              child: Align(
+                child: SizedBox(
+                  width: (Constants.defaultGridCellSize.width *
+                      Constants.defaultGridCells.dx),
+                  height: (Constants.defaultGridCellSize.height *
+                      Constants.defaultGridCells.dy),
+                  child: GridCanvas(),
+                ),
+              ),
+            ),
+            const SidebarWidget(),
+          ],
+        ),
       ),
     );
   }

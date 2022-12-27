@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_layout_demo/canvas_controller.dart';
 import 'package:table_layout_demo/general_table_controller.dart';
-import 'package:table_layout_demo/general_table_controller.dart';
 import 'package:table_layout_demo/table/table_controller.dart';
 import 'constants.dart';
 import 'table/table_widget.dart';
@@ -12,6 +11,7 @@ class SidebarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.lazyPut(() => CanvasController());
     return Container(
       decoration: const BoxDecoration(
         border: Border(left: BorderSide(color: Colors.black)),
@@ -33,7 +33,7 @@ class SidebarWidget extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               GetBuilder<CanvasController>(
-                id: Constants.defaultGridConstants.gridSidebarBarTableListId,
+                id: GridConstants.gridSidebarBarTableListId,
                 builder: (controller) => SizedBox(
                   height: MediaQuery.of(context).size.height / 2,
                   child: SingleChildScrollView(
@@ -42,7 +42,8 @@ class SidebarWidget extends StatelessWidget {
                       runSpacing: 10,
                       children: [
                         for (int i = 0; i < 5; i++)
-                          _buildTableButton("Table $i"),
+                          _buildTableButton(
+                              tableId: i.toString(), title: 'Table $i'),
                       ],
                     ),
                   ),
@@ -51,7 +52,7 @@ class SidebarWidget extends StatelessWidget {
               const Divider(color: Colors.blueGrey),
               const SizedBox(height: 20),
               GetBuilder<CanvasController>(
-                  id: Constants.defaultGridConstants.gridSidebarTablePropsId,
+                  id: GridConstants.gridSidebarTablePropsId,
                   builder: (controller) => Opacity(
                       opacity: controller.getSelectedTable == null ? 0.5 : 1,
                       child: IgnorePointer(
@@ -60,7 +61,7 @@ class SidebarWidget extends StatelessWidget {
             ],
           ),
           GetBuilder<CanvasController>(
-            id: Constants.defaultGridConstants.gridSidebarTablePropsId,
+            id: GridConstants.gridSidebarTablePropsId,
             builder: (controller) => TextButton(
                 onPressed: controller.getSelectedTable != null
                     ? controller.removeTable
@@ -167,10 +168,12 @@ class SidebarWidget extends StatelessWidget {
                   GeneralTableController.to.onChangeTableSize(width: value),
               keyboardType: TextInputType.number,
               controller: controller.widthTEC,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                suffixText: (controller.getSelectedTable?.controller.getSize
+                    .toString()),
+                border: const OutlineInputBorder(),
                 hintText: 'Enter table width',
-                hintStyle: TextStyle(fontSize: 12),
+                hintStyle: const TextStyle(fontSize: 12),
               ),
             ),
           ),
@@ -189,13 +192,6 @@ class SidebarWidget extends StatelessWidget {
             child: TextFormField(
               onFieldSubmitted: (value) =>
                   GeneralTableController.to.onChangeTableSize(height: value),
-              // onChanged: (value) {
-              //   print("height: $value");
-              //   controller.heightTEC.text = value;
-              //   controller.getSelectedTable?.controller.setSize(
-              //     height: double.parse(controller.heightTEC.text),
-              //   );
-              // },
               keyboardType: TextInputType.number,
               controller: controller.heightTEC,
               decoration: const InputDecoration(
@@ -219,22 +215,25 @@ class SidebarWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildTableButton(String title) {
+  Widget _buildTableButton({required String tableId, required String title}) {
+    final tableCtr = TableController(
+        tableId: tableId,
+        tableName: title,
+        size: const Size(80, 70),
+        tableDecoration: TableDecoration(
+          inactiveBgColor: Colors.black12,
+          textStyle: const TextStyle(
+            color: Colors.black,
+            fontSize: 11,
+          ),
+        ));
+    final bool isDisabled = CanvasController.to.isTableUsed(tableCtr);
     return TableWidget(
+      isDisabled: isDisabled,
       onTap: () {
-        CanvasController.to.addTable(TableController(tableName: title));
+        CanvasController.to.addTable(tableCtr);
       },
-      controller: TableController(
-          tableName: title,
-          size: const Size(80, 70),
-          tableDecoration: TableDecoration(
-            inactiveBorder: Border.all(color: Colors.blueGrey),
-            inactiveBgColor: Colors.black12,
-            textStyle: const TextStyle(
-              color: Colors.black,
-              fontSize: 11,
-            ),
-          )),
+      controller: tableCtr,
     );
   }
 }

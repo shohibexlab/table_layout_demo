@@ -12,13 +12,13 @@ class DraggableWidget extends StatelessWidget {
       return Draggable(
           onDragEnd: onDragEnd,
           onDragStarted: onDragStarted,
+          childWhenDragging: const SizedBox(),
           feedback: Material(color: Colors.transparent, child: table),
           child: table);
     } else {
       return GestureDetector(
           onPanStart: (details) {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                duration: Duration(seconds: 5),
                 content: Text(
                     "You can only drag selected tables. Please select the table first.")));
           },
@@ -26,9 +26,12 @@ class DraggableWidget extends StatelessWidget {
     }
   }
 
-  void onDragStarted() {}
+  void onDragStarted() async {
+    print("Drag started");
+  }
 
   void onDragEnd(DraggableDetails o) {
+    print("DraggableDetails: ${o.offset}");
     table.controller.changePosition(o.offset);
   }
 }

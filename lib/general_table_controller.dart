@@ -1,58 +1,30 @@
-import 'dart:ui';
-
 import 'package:get/get.dart';
 import 'package:table_layout_demo/canvas_controller.dart';
 import 'package:table_layout_demo/table/table_controller.dart';
 import 'constants.dart';
+import './utils.dart';
 
 class GeneralTableController extends GetxController {
   static GeneralTableController get to => Get.find();
 
-  void onResizeTable({double? addingWidth, double? addingHeight}) {
+  void onResizeTableByCellIndex({double? addingWidth, double? addingHeight}) {
     if (addingWidth != null || addingHeight != null) {
       final getSelectedTable = CanvasController.to.getSelectedTable;
       if (getSelectedTable != null) {
-        double width = getSelectedTable.controller.getSize.width;
-        double height = getSelectedTable.controller.getSize.height;
+        double width = getSelectedTable.controller.getSize.toCellIndex.width;
+        double height = getSelectedTable.controller.getSize.toCellIndex.height;
         if (addingWidth != null) {
           width += addingWidth;
+          CanvasController.to.widthTEC.text = width.toString();
         }
         if (addingHeight != null) {
           height += addingHeight;
+          CanvasController.to.heightTEC.text = height.toString();
         }
-        getSelectedTable.controller.setSize(height: height, width: width);
-        CanvasController.to.heightTEC.text = height.toString();
-
-        CanvasController.to
-            .update([Constants.defaultGridConstants.gridCanvasTableId]);
+        getSelectedTable.controller
+            .setSize(height: height, width: width, isAsCellIndex: true);
+        CanvasController.to.update([GridConstants.gridCanvasTableId]);
       }
-      // final widthTEC = width;
-      // final heightTEC = height;
-      // if (width != null) {
-      //   if (width.isNotEmpty && width != "0") {
-      //     widthTEC.text = width;
-      //   } else if (getSelectedTable != null && width == "0") {
-      //     widthTEC.text =
-      //         getSelectedTable.controller.getSizeAsCellIndex.width.toString();
-      //   }
-      // }
-      // if (height != null) {
-      //   if (height.isNotEmpty && height != "0") {
-      //     heightTEC.text = height;
-      //   } else if (getSelectedTable != null && height == "0") {
-      //     heightTEC.text =
-      //         getSelectedTable.controller.getSizeAsCellIndex.height.toString();
-      //   }
-      // }
-      //
-      // print("widthTEC.text: ${widthTEC.text}");
-      // print("heightTEC.text: ${heightTEC.text}");
-      // getSelectedTable?.controller.setSize(
-      //     isAsCellIndex: true,
-      //     height: double.parse(heightTEC.text),
-      //     width: double.parse(widthTEC.text));
-      // CanvasController.to
-      //     .update([Constants.defaultGridConstants.gridCanvasTableId]);
     }
   }
 
@@ -62,19 +34,31 @@ class GeneralTableController extends GetxController {
       final widthTEC = CanvasController.to.widthTEC;
       final heightTEC = CanvasController.to.heightTEC;
       if (width != null) {
-        if (width.isNotEmpty && width != "0") {
+        if ((width.isNotEmpty && width != "0") && (num.parse(width) > 0)) {
           widthTEC.text = width;
         } else if (getSelectedTable != null && width == "0") {
           widthTEC.text =
-              getSelectedTable.controller.getSizeAsCellIndex.width.toString();
+              getSelectedTable.controller.getSize.toCellIndex.width.toString();
+        } else {
+          if (getSelectedTable != null) {
+            widthTEC.text = getSelectedTable
+                .controller.getSize.toCellIndex.width
+                .toString();
+          }
         }
       }
       if (height != null) {
-        if (height.isNotEmpty && height != "0") {
+        if ((height.isNotEmpty && height != "0") && (num.parse(height) > 0)) {
           heightTEC.text = height;
-        } else if (getSelectedTable != null && height == "0") {
+        } else if ((getSelectedTable != null && height == "0")) {
           heightTEC.text =
-              getSelectedTable.controller.getSizeAsCellIndex.height.toString();
+              getSelectedTable.controller.getSize.toCellIndex.height.toString();
+        } else {
+          if (getSelectedTable != null) {
+            heightTEC.text = getSelectedTable
+                .controller.getSize.toCellIndex.height
+                .toString();
+          }
         }
       }
 
@@ -85,8 +69,7 @@ class GeneralTableController extends GetxController {
           isAsCellIndex: true,
           height: double.parse(heightTEC.text),
           width: double.parse(widthTEC.text));
-      CanvasController.to
-          .update([Constants.defaultGridConstants.gridCanvasTableId]);
+      CanvasController.to.update([GridConstants.gridCanvasTableId]);
     }
   }
 
@@ -96,8 +79,8 @@ class GeneralTableController extends GetxController {
       getSelectedTable.controller.changeShape(shape);
 
       CanvasController.to.update([
-        Constants.defaultGridConstants.gridCanvasTableId,
-        Constants.defaultGridConstants.gridSidebarTablePropsId,
+        GridConstants.gridCanvasTableId,
+        GridConstants.gridSidebarTablePropsId,
       ]);
     }
   }
