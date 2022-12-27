@@ -159,7 +159,7 @@ class TableController extends ValueNotifier<TableData> {
   set setIsSelected(bool isSelected) =>
       value = value.copyWith(isSelected: isSelected);
 
-  void setSize({double? width, double? height, bool isAsCellIndex = false}) {
+  void changeSize({double? width, double? height, bool isAsCellIndex = false}) {
     if (isAsCellIndex) {
       value = value.copyWith(
         width: Constants.defaultGridCellSize.width * width!,
@@ -168,11 +168,16 @@ class TableController extends ValueNotifier<TableData> {
     } else {
       value = value.copyWith(width: width, height: height);
     }
+    CanvasController.to.update([GridConstants.gridCanvasTableId]);
   }
 
   void changeShape(TableShape shape) {
     value = value.copyWith(
         tableDecoration: value.tableDecoration!.copyWith(tableShape: shape));
+    CanvasController.to.update([
+      GridConstants.gridCanvasTableId,
+      GridConstants.gridSidebarTablePropsId,
+    ]);
   }
 
   void changePosition(Offset o) {
@@ -185,15 +190,8 @@ class TableController extends ValueNotifier<TableData> {
       final xRemainder = (off.dx % Constants.defaultGridCellSize.width);
 
       final halfCell = Constants.defaultGridCellSize.width / 2;
-      print("Initial Offset: $off");
-      print('XRemainder: $xRemainder');
-      print('YRemainder: $yRemainder');
-      print('HalfCell: $halfCell');
-      print(
-          'Width: ${Get.width - (Constants.defaultGridCells.dx - Constants.defaultTableSize.width + 10)}');
       if (xRemainder != 0) {
         double dx = off.dx;
-        print('dx: $dx');
         if (halfCell < xRemainder) {
           final temp = Constants.defaultGridCellSize.width - xRemainder;
           dx += temp;
@@ -206,7 +204,6 @@ class TableController extends ValueNotifier<TableData> {
       }
       if (yRemainder != 0) {
         double dy = off.dy;
-        print('dy: $dy');
         if (halfCell < yRemainder) {
           final temp = Constants.defaultGridCellSize.width - yRemainder;
           dy += temp;
@@ -217,18 +214,10 @@ class TableController extends ValueNotifier<TableData> {
         }
         off = Offset(off.dx, dy);
       }
-      print("Final Offset: $off");
-      // setOffset = Offset(1500, 700).toCellIndex;
       setOffset = off;
 
       CanvasController.to.update(
           [GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
     }
-  }
-
-  void changePositionByIndex(Offset o) {
-    setOffset = o.toOffsetFromCellIndex;
-    CanvasController.to
-        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
   }
 }

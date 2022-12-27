@@ -9,29 +9,36 @@ class DraggableWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isSelected = table.controller.getIsSelected;
     if (isSelected) {
+      return GestureDetector(onPanUpdate: onPanUpdate, child: table);
       return Draggable(
           onDragEnd: onDragEnd,
-          onDragStarted: onDragStarted,
           childWhenDragging: const SizedBox(),
           feedback: Material(color: Colors.transparent, child: table),
           child: table);
     } else {
       return GestureDetector(
           onPanStart: (details) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text(
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                action: SnackBarAction(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                  },
+                  label: "Close",
+                ),
+                content: const Text(
                     "You can only drag selected tables. Please select the table first.")));
           },
           child: table);
     }
   }
 
-  void onDragStarted() async {
-    print("Drag started");
+  void onDragEnd(DraggableDetails o) {
+    table.controller.changePosition(o.offset);
   }
 
-  void onDragEnd(DraggableDetails o) {
-    print("DraggableDetails: ${o.offset}");
-    table.controller.changePosition(o.offset);
+  void onPanUpdate(DragUpdateDetails details) {
+    table.controller.changePosition(Offset(
+        details.globalPosition.dx - table.controller.getSize.width / 2,
+        details.globalPosition.dy - table.controller.getSize.height / 2));
   }
 }

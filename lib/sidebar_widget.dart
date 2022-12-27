@@ -93,7 +93,8 @@ class SidebarWidget extends StatelessWidget {
 
     Widget getShapeWidget(TableShape shape) {
       void onTap() {
-        GeneralTableController.to.onChangeTableShape(shape);
+        controller.getSelectedTable?.controller.changeShape(shape);
+        // GeneralTableController.to.onChangeTableShape(shape);
       }
 
       bool isSelected =
@@ -168,12 +169,12 @@ class SidebarWidget extends StatelessWidget {
                   GeneralTableController.to.onChangeTableSize(width: value),
               keyboardType: TextInputType.number,
               controller: controller.widthTEC,
-              decoration: InputDecoration(
-                suffixText: (controller.getSelectedTable?.controller.getSize
-                    .toString()),
-                border: const OutlineInputBorder(),
+              decoration: const InputDecoration(
+                // suffixText: (controller.getSelectedTable?.controller.getSize
+                //     .toString()),
+                border: OutlineInputBorder(),
                 hintText: 'Enter table width',
-                hintStyle: const TextStyle(fontSize: 12),
+                hintStyle: TextStyle(fontSize: 12),
               ),
             ),
           ),
@@ -219,7 +220,6 @@ class SidebarWidget extends StatelessWidget {
     final tableCtr = TableController(
         tableId: tableId,
         tableName: title,
-        size: const Size(80, 70),
         tableDecoration: TableDecoration(
           inactiveBgColor: Colors.black12,
           textStyle: const TextStyle(

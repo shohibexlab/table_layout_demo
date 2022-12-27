@@ -17,14 +17,8 @@ class TableWidget extends StatelessWidget {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TableWidget(key: $key, controller: ${controller.toString()})';
+    return 'TableWidget(TABLE_ID: ${controller.tableId})';
   }
-
-  // Icon icon = const Icon(
-  //   Icons.do_not_disturb_on_total_silence_outlined,
-  //   color: Colors.blueAccent,
-  //   size: 20,
-  // );
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +33,13 @@ class TableWidget extends StatelessWidget {
             child: Opacity(
               opacity: isDisabled! ? 0.5 : 1,
               child: SizedBox(
-                width: controller.getSize.height,
+                width: controller.getSize.width,
                 height: controller.getSize.height,
-                child: Container(
+                child: DecoratedBox(
                     decoration: BoxDecoration(
-                        borderRadius: _getRadius(), color: _getColor()),
-                    // height: controller.getSize.height,
-                    // width: controller.getSize.height,
+                        shape: BoxShape.rectangle,
+                        borderRadius: _getRadius(),
+                        color: _getColor()),
                     child: Center(
                         child: Text(tableName,
                             style:

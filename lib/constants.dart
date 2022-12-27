@@ -17,9 +17,8 @@ class Constants {
   static int get defaultGridSubdivision =>
       defaultGridInterval ~/ defaultGridCellSize.height;
   static set setDefaultGridCellSize(Size size) => defaultGridCellSize = size;
-  static Size get defaultTableSize =>
-      Size(defaultGridCellSize.width * 10, defaultGridCellSize.height * 10)
-          .toCellIndex;
+  static Size get defaultTableSize => Size(defaultGridCellSize.width * 8,
+      defaultGridCellSize.height * 8); // 8 is pixels of table
   static const double defaultSidebarWidth = 300;
 }
 

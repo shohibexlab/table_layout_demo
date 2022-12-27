@@ -124,17 +124,17 @@ class GridCanvas extends StatelessWidget {
     // print('DIR_CHANGE');
     if (dy > oldDy) {
       if (dragDirection == DragDirection.up) {
-        table.controller.changePositionByIndex(Offset(
-            table.controller.getOffset.toCellIndex.dx,
-            table.controller.getOffset.toCellIndex.dy - 1.toDouble()));
-        GeneralTableController.to
-            .onResizeTableByCellIndex(addingHeight: 1.toDouble());
-      } else {
-        table.controller.changePositionByIndex(Offset(
-            table.controller.getOffset.toCellIndex.dx,
-            table.controller.getOffset.toCellIndex.dy + 1.toDouble()));
-        GeneralTableController.to
-            .onResizeTableByCellIndex(addingHeight: -1.toDouble());
+        // table.controller.changePositionByIndex(Offset(
+        //     table.controller.getOffset.toCellIndex.dx,
+        //     table.controller.getOffset.toCellIndex.dy - 1.toDouble()));
+        // GeneralTableController.to
+        //     .onResizeTableByCellIndex(addingHeight: 1.toDouble());
+        // } else {
+        //   table.controller.changePositionByIndex(Offset(
+        //       table.controller.getOffset.toCellIndex.dx,
+        //       table.controller.getOffset.toCellIndex.dy + 1.toDouble()));
+        //   GeneralTableController.to
+        //       .onResizeTableByCellIndex(addingHeight: -1.toDouble());
       }
     }
     reversedAt = dy.toInt();
@@ -150,19 +150,19 @@ class GridCanvas extends StatelessWidget {
       // print('RESIZE');
       if (dy > oldDy) {
         if (dragDirection == DragDirection.up) {
-          table.controller.changePositionByIndex(Offset(
-              table.controller.getOffset.toCellIndex.dx,
-              table.controller.getOffset.toCellIndex.dy - 1.toDouble()));
-          GeneralTableController.to
-              .onResizeTableByCellIndex(addingHeight: 1.toDouble());
-          oldDy = dy;
+          // table.controller.changePositionByIndex(Offset(
+          //     table.controller.getOffset.toCellIndex.dx,
+          //     table.controller.getOffset.toCellIndex.dy - 1.toDouble()));
+          // GeneralTableController.to
+          //     .onResizeTableByCellIndex(addingHeight: 1.toDouble());
+          // oldDy = dy;
         } else {
-          table.controller.changePositionByIndex(Offset(
-              table.controller.getOffset.toCellIndex.dx,
-              table.controller.getOffset.toCellIndex.dy + 1.toDouble()));
-          GeneralTableController.to
-              .onResizeTableByCellIndex(addingHeight: -1.toDouble());
-          oldDy = dy;
+          // table.controller.changePositionByIndex(Offset(
+          //     table.controller.getOffset.toCellIndex.dx,
+          //     table.controller.getOffset.toCellIndex.dy + 1.toDouble()));
+          // GeneralTableController.to
+          //     .onResizeTableByCellIndex(addingHeight: -1.toDouble());
+          // oldDy = dy;
         }
       }
     } else {
@@ -173,20 +173,20 @@ class GridCanvas extends StatelessWidget {
       if (dy > reversedAt) {
         if (dragDirection == DragDirection.up) {
           print('UP');
-          table.controller.changePositionByIndex(Offset(
-              table.controller.getOffset.toCellIndex.dx,
-              table.controller.getOffset.toCellIndex.dy - 1.toDouble()));
-          GeneralTableController.to
-              .onResizeTableByCellIndex(addingHeight: 1.toDouble());
-          oldDy = dy;
+          // table.controller.changePositionByIndex(Offset(
+          //     table.controller.getOffset.toCellIndex.dx,
+          //     table.controller.getOffset.toCellIndex.dy - 1.toDouble()));
+          // GeneralTableController.to
+          //     .onResizeTableByCellIndex(addingHeight: 1.toDouble());
+          // oldDy = dy;
         } else {
           print('DOWN');
-          table.controller.changePositionByIndex(Offset(
-              table.controller.getOffset.toCellIndex.dx,
-              table.controller.getOffset.toCellIndex.dy + 1.toDouble()));
-          GeneralTableController.to
-              .onResizeTableByCellIndex(addingHeight: -1.toDouble());
-          oldDy = dy;
+          // table.controller.changePositionByIndex(Offset(
+          //     table.controller.getOffset.toCellIndex.dx,
+          //     table.controller.getOffset.toCellIndex.dy + 1.toDouble()));
+          // GeneralTableController.to
+          //     .onResizeTableByCellIndex(addingHeight: -1.toDouble());
+          // oldDy = dy;
         }
       }
     }

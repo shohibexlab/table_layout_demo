@@ -1,32 +1,9 @@
 import 'package:get/get.dart';
 import 'package:table_layout_demo/canvas_controller.dart';
-import 'package:table_layout_demo/table/table_controller.dart';
-import 'constants.dart';
 import './utils.dart';
 
 class GeneralTableController extends GetxController {
   static GeneralTableController get to => Get.find();
-
-  void onResizeTableByCellIndex({double? addingWidth, double? addingHeight}) {
-    if (addingWidth != null || addingHeight != null) {
-      final getSelectedTable = CanvasController.to.getSelectedTable;
-      if (getSelectedTable != null) {
-        double width = getSelectedTable.controller.getSize.toCellIndex.width;
-        double height = getSelectedTable.controller.getSize.toCellIndex.height;
-        if (addingWidth != null) {
-          width += addingWidth;
-          CanvasController.to.widthTEC.text = width.toString();
-        }
-        if (addingHeight != null) {
-          height += addingHeight;
-          CanvasController.to.heightTEC.text = height.toString();
-        }
-        getSelectedTable.controller
-            .setSize(height: height, width: width, isAsCellIndex: true);
-        CanvasController.to.update([GridConstants.gridCanvasTableId]);
-      }
-    }
-  }
 
   void onChangeTableSize({String? width, String? height}) {
     if (width != null || height != null) {
@@ -62,26 +39,10 @@ class GeneralTableController extends GetxController {
         }
       }
 
-      // print("widthTEC.text: ${widthTEC.text}");
-      // print("heightTEC.text: ${heightTEC.text}");
-      // print("Offset: ${getSelectedTable?.controller.getOffsetAsCellIndex}");
-      getSelectedTable?.controller.setSize(
+      getSelectedTable?.controller.changeSize(
           isAsCellIndex: true,
           height: double.parse(heightTEC.text),
           width: double.parse(widthTEC.text));
-      CanvasController.to.update([GridConstants.gridCanvasTableId]);
-    }
-  }
-
-  void onChangeTableShape(TableShape shape) {
-    final getSelectedTable = CanvasController.to.getSelectedTable;
-    if (getSelectedTable != null) {
-      getSelectedTable.controller.changeShape(shape);
-
-      CanvasController.to.update([
-        GridConstants.gridCanvasTableId,
-        GridConstants.gridSidebarTablePropsId,
-      ]);
     }
   }
 }
