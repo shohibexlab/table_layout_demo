@@ -123,6 +123,16 @@ class TableController extends ValueNotifier<TableData> {
   ///
   /// but using Offset(dx, dy) where dx and dy is Flutter offset.
 
+  VoidCallback? callback;
+  set setCallback(VoidCallback cb) {
+    if (callback != null) {
+      logger('Callback RESET for tableID ${value.tableId}');
+    } else {
+      logger('Callback SET for tableID ${value.tableId}');
+    }
+    callback = cb;
+  }
+
   TableController(
       {Size? size,
       Offset? offset,
@@ -130,6 +140,7 @@ class TableController extends ValueNotifier<TableData> {
       String? tableName,
       TableShape? shape,
       bool? isSelected,
+      this.callback,
       TableDecoration? tableDecoration,
       required String tableId})
       : super(
@@ -168,7 +179,9 @@ class TableController extends ValueNotifier<TableData> {
     } else {
       value = value.copyWith(width: width, height: height);
     }
-    CanvasController.to.update([GridConstants.gridCanvasTableId]);
+    callback?.call();
+
+    // CanvasController.to.update([GridConstants.gridCanvasTableId]);
   }
 
   Offset get getCenterOffset {
@@ -220,29 +233,33 @@ class TableController extends ValueNotifier<TableData> {
   void moveToTopRight() {
     setOffset = Offset(
         GlobalKeyConstants.canvasGridKey.getSize!.width - getSize.width, 0);
-    CanvasController.to
-        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+    callback?.call();
+
+    CanvasController.to.update([GridConstants.gridCanvasId]);
   }
 
   void moveToTopLeft() {
     setOffset = const Offset(0, 0);
-    CanvasController.to
-        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+    callback?.call();
+
+    CanvasController.to.update([GridConstants.gridCanvasId]);
   }
 
   void moveToBottomRight() {
     setOffset = Offset(
         GlobalKeyConstants.canvasGridKey.getSize!.width - getSize.width,
         GlobalKeyConstants.canvasGridKey.getSize!.height - getSize.height);
-    CanvasController.to
-        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+    callback?.call();
+
+    CanvasController.to.update([GridConstants.gridCanvasId]);
   }
 
   void moveToBottomLeft() {
     setOffset = Offset(
         0, GlobalKeyConstants.canvasGridKey.getSize!.height - getSize.height);
-    CanvasController.to
-        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+    callback?.call();
+
+    CanvasController.to.update([GridConstants.gridCanvasId]);
   }
 
   void moveToCenter() {
@@ -250,17 +267,16 @@ class TableController extends ValueNotifier<TableData> {
         GlobalKeyConstants.canvasGridKey.getSize!.width / 2 - getSize.width / 2,
         GlobalKeyConstants.canvasGridKey.getSize!.height / 2 -
             getSize.height / 2);
-    CanvasController.to
-        .update([GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
+    callback?.call();
+
+    CanvasController.to.update([GridConstants.gridCanvasId]);
   }
 
   void changeShape(TableShape shape) {
     value = value.copyWith(
         tableDecoration: value.tableDecoration!.copyWith(tableShape: shape));
-    CanvasController.to.update([
-      GridConstants.gridCanvasTableId,
-      GridConstants.gridSidebarTablePropsId,
-    ]);
+    callback?.call();
+    CanvasController.to.update([GridConstants.gridSidebarTablePropsId]);
   }
 
   void changePosition(Offset o) {
@@ -269,7 +285,7 @@ class TableController extends ValueNotifier<TableData> {
     if (canvasPosition != null) {
       Offset off = Offset(o.dx - canvasPosition.dx, o.dy - canvasPosition.dy);
 
-      print("Initial Offset: $off");
+      // logger("Initial Offset: $off");
       final yRemainder =
           (off.dy % GridSettingsConstants.defaultGridCellSize.height);
       final xRemainder =
@@ -303,7 +319,7 @@ class TableController extends ValueNotifier<TableData> {
         off = Offset(off.dx, dy);
       }
 
-      print("Final Offset: $off");
+      // logger("Final Offset: $off");
       //Check if the table goes off Canvas boundaries
       if (!GridSettingsConstants.canItemGoOffCanvasBoundaries) {
         //Left
@@ -327,9 +343,6 @@ class TableController extends ValueNotifier<TableData> {
         }
       }
       setOffset = off;
-
-      CanvasController.to.update(
-          [GridConstants.gridCanvasId, GridConstants.gridCanvasTableId]);
     }
   }
 }

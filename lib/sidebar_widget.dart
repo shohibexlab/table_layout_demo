@@ -32,48 +32,54 @@ class SidebarWidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              GetBuilder<CanvasController>(
-                id: GridConstants.gridSidebarBarTableListId,
-                builder: (controller) => SizedBox(
-                  height: MediaQuery.of(context).size.height / 2,
-                  child: SingleChildScrollView(
-                    child: Wrap(
-                      spacing: 10,
-                      runSpacing: 10,
-                      children: [
-                        for (int i = 0; i < 5; i++)
-                          _buildTableButton(
-                              tableId: i.toString(), title: 'Table $i'),
-                      ],
+              RepaintBoundary(
+                child: GetBuilder<CanvasController>(
+                  id: GridConstants.gridSidebarBarTableListId,
+                  builder: (controller) => SizedBox(
+                    height: MediaQuery.of(context).size.height / 2,
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        spacing: 10,
+                        runSpacing: 10,
+                        children: [
+                          for (int i = 0; i < 5; i++)
+                            _buildTableButton(
+                                tableId: i.toString(), title: 'Table $i'),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
               const Divider(color: Colors.blueGrey),
               const SizedBox(height: 20),
-              GetBuilder<CanvasController>(
-                  id: GridConstants.gridSidebarTablePropsId,
-                  builder: (controller) => Opacity(
-                      opacity: controller.getSelectedTable == null ? 0.5 : 1,
-                      child: IgnorePointer(
-                          ignoring: controller.getSelectedTable == null,
-                          child: _buildTableParamsWidget(controller)))),
+              RepaintBoundary(
+                child: GetBuilder<CanvasController>(
+                    id: GridConstants.gridSidebarTablePropsId,
+                    builder: (controller) => Opacity(
+                        opacity: controller.getSelectedTable == null ? 0.5 : 1,
+                        child: IgnorePointer(
+                            ignoring: controller.getSelectedTable == null,
+                            child: _buildTableParamsWidget(controller)))),
+              ),
             ],
           ),
-          GetBuilder<CanvasController>(
-            id: GridConstants.gridSidebarTablePropsId,
-            builder: (controller) => TextButton(
-                onPressed: controller.getSelectedTable != null
-                    ? controller.removeTable
-                    : null,
-                style: TextButton.styleFrom(
-                    minimumSize: const Size(
-                        GridSettingsConstants.defaultSidebarWidth, 50),
-                    side: const BorderSide(
-                      color: Colors.blueGrey,
-                      width: 1,
-                    )),
-                child: const Text("Delete")),
+          RepaintBoundary(
+            child: GetBuilder<CanvasController>(
+              id: GridConstants.gridSidebarTablePropsId,
+              builder: (controller) => TextButton(
+                  onPressed: controller.getSelectedTable != null
+                      ? controller.removeTable
+                      : null,
+                  style: TextButton.styleFrom(
+                      minimumSize:
+                          Size(GridSettingsConstants.defaultSidebarWidth, 50),
+                      side: const BorderSide(
+                        color: Colors.blueGrey,
+                        width: 1,
+                      )),
+                  child: const Text("Delete")),
+            ),
           ),
         ],
       ),
@@ -141,79 +147,72 @@ class SidebarWidget extends StatelessWidget {
       }
     }
 
-    params.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          getTitle("Shape"),
-          Row(
-            children: [
-              getShapeWidget(TableShape.rectangle),
-              const SizedBox(width: 10),
-              getShapeWidget(TableShape.circle),
-            ],
-          )
-        ],
-      ),
-    );
-
-    params.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          getTitle("Width"),
-          SizedBox(
-            width: 150,
-            height: 30,
-            child: TextFormField(
-              onFieldSubmitted: (value) =>
-                  GeneralTableController.to.onChangeTableSize(width: value),
-              keyboardType: TextInputType.number,
-              controller: controller.widthTEC,
-              decoration: const InputDecoration(
-                // suffixText: (controller.getSelectedTable?.controller.getSize
-                //     .toString()),
-                border: OutlineInputBorder(),
-                hintText: 'Enter table width',
-                hintStyle: TextStyle(fontSize: 12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    params.add(
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          getTitle("Height"),
-          SizedBox(
-            width: 150,
-            height: 30,
-            child: TextFormField(
-              onFieldSubmitted: (value) =>
-                  GeneralTableController.to.onChangeTableSize(height: value),
-              keyboardType: TextInputType.number,
-              controller: controller.heightTEC,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Enter table height',
-                hintStyle: TextStyle(fontSize: 12),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return Column(
+    params.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        for (Widget param in params) ...[
-          param,
-          const SizedBox(height: 20),
-        ],
+        getTitle("Shape"),
+        Row(
+          children: [
+            getShapeWidget(TableShape.rectangle),
+            const SizedBox(width: 10),
+            getShapeWidget(TableShape.circle),
+          ],
+        )
       ],
+    ));
+
+    params.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        getTitle("Width"),
+        SizedBox(
+          width: 150,
+          height: 30,
+          child: TextFormField(
+            onFieldSubmitted: (value) =>
+                GeneralTableController.to.onChangeTableSize(width: value),
+            keyboardType: TextInputType.number,
+            controller: controller.widthTEC,
+            decoration: const InputDecoration(
+              // suffixText: (controller.getSelectedTable?.controller.getSize
+              //     .toString()),
+              border: OutlineInputBorder(),
+              hintText: 'Enter table width',
+              hintStyle: TextStyle(fontSize: 12),
+            ),
+          ),
+        ),
+      ],
+    ));
+
+    params.add(Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        getTitle("Height"),
+        SizedBox(
+          width: 150,
+          height: 30,
+          child: TextFormField(
+            onFieldSubmitted: (value) =>
+                GeneralTableController.to.onChangeTableSize(height: value),
+            keyboardType: TextInputType.number,
+            controller: controller.heightTEC,
+            decoration: const InputDecoration(
+              border: OutlineInputBorder(),
+              hintText: 'Enter table height',
+              hintStyle: TextStyle(fontSize: 12),
+            ),
+          ),
+        ),
+      ],
+    ));
+
+    return RepaintBoundary(
+      child: Column(
+        children: [
+          for (Widget param in params) ...[param, const SizedBox(height: 20)],
+        ],
+      ),
     );
   }
 
@@ -230,6 +229,7 @@ class SidebarWidget extends StatelessWidget {
         ));
     final bool isDisabled = CanvasController.to.isTableUsed(tableCtr);
     return TableWidget(
+      isPositioned: false,
       isDisabled: isDisabled,
       onTap: () {
         CanvasController.to.addTable(tableCtr);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:table_layout_demo/canvas_controller.dart';
 import 'package:table_layout_demo/general_table_controller.dart';
@@ -8,10 +9,12 @@ import 'constants.dart';
 import 'table/grid_canvas_widget.dart';
 
 void main() {
-  // debugRepaintRainbowEnabled = true;
+  debugRepaintRainbowEnabled = false;
   Get.lazyPut(() => CanvasController());
   Get.lazyPut(() => GeneralTableController());
-  runApp(const MaterialApp(home: Material(child: Homepage())));
+  runApp(const MaterialApp(
+      // showPerformanceOverlay: true,
+      home: Material(child: Homepage())));
 }
 
 class Homepage extends StatelessWidget {
@@ -19,42 +22,42 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final BoxConstraints constraints = BoxConstraints(
-      maxWidth: Get.width,
-      maxHeight: Get.height,
-    );
-    print('Screen size : => ${constraints.maxWidth} ${constraints.maxHeight}');
+    // final BoxConstraints constraints = BoxConstraints(
+    //   maxWidth: Get.width,
+    //   maxHeight: Get.height,
+    // );
+    // logger('Screen size : => ${constraints.maxWidth} ${constraints.maxHeight}');
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          print("Canvas Size : ${GlobalKeyConstants.canvasGridKey.getSize}");
-          print(
+          logger("Canvas Size : ${GlobalKeyConstants.canvasGridKey.getSize}");
+          logger(
               "Canvas left top corner : ${CanvasController.to.getLeftTopCorner}");
-          print(
+          logger(
               "Canvas right top corner : ${CanvasController.to.getRightTopCorner}");
-          print(
+          logger(
               "Canvas left bottom corner : ${CanvasController.to.geLeftBottomCorner}");
-          print(
+          logger(
               "Canvas right bottom corner : ${CanvasController.to.getRightBottomCorner}");
 
-          print("--------------------------");
-          print(
+          logger("--------------------------");
+          logger(
               "Selected table center position : ${CanvasController.to.getSelectedTable?.controller.getCenterOffset}");
-          print(
+          logger(
               "Selected table left top corner : ${CanvasController.to.getSelectedTable?.controller.getLeftTopCorner}");
-          print(
+          logger(
               "Selected table right top corner : ${CanvasController.to.getSelectedTable?.controller.getRightTopCorner}");
-          print(
+          logger(
               "Selected table left bottom corner : ${CanvasController.to.getSelectedTable?.controller.getLeftBottomCorner}");
-          print(
+          logger(
               "Table touching top : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasTop}");
-          print(
+          logger(
               "Table touching left : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasLeft}");
-          print(
+          logger(
               "Table touching right : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasRight}");
-          print(
+          logger(
               "Table touching bottom : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasBottom}");
-          // CanvasController.to.getSelectedTable?.controller.moveToCenter();
+          // CanvasController.to.getSelectedTable?.controller.moveToBottomLeft();
         },
         label: const Text(
           'Test Button',
@@ -63,27 +66,21 @@ class Homepage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       backgroundColor: Colors.black26,
-      body: GridPaper(
-        divisions: 2,
-        color: Colors.redAccent.withOpacity(.0),
-        interval: GridSettingsConstants.defaultGridInterval,
-        subdivisions: GridSettingsConstants.defaultGridSubdivision,
-        child: Row(
-          children: [
-            Expanded(
-              child: Align(
-                child: SizedBox(
-                  width: (GridSettingsConstants.defaultGridCellSize.width *
-                      GridSettingsConstants.defaultGridCells.dx),
-                  height: (GridSettingsConstants.defaultGridCellSize.height *
-                      GridSettingsConstants.defaultGridCells.dy),
-                  child: GridCanvas(),
-                ),
+      body: Row(
+        children: [
+          Expanded(
+            child: Align(
+              child: SizedBox(
+                width: (GridSettingsConstants.defaultGridCellSize.width *
+                    GridSettingsConstants.defaultGridCells.dx),
+                height: (GridSettingsConstants.defaultGridCellSize.height *
+                    GridSettingsConstants.defaultGridCells.dy),
+                child: GridCanvas(),
               ),
             ),
-            const SidebarWidget(),
-          ],
-        ),
+          ),
+          const SidebarWidget(),
+        ],
       ),
     );
   }

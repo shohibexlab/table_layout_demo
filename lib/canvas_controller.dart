@@ -5,6 +5,10 @@ import 'package:table_layout_demo/table/table_controller.dart';
 import 'package:table_layout_demo/table/table_widget.dart';
 import 'package:table_layout_demo/utils.dart';
 
+import 'logger.dart';
+
+export './logger.dart';
+
 class CanvasController extends GetxController {
   static CanvasController get to => Get.find();
   final TextEditingController heightTEC = TextEditingController();
@@ -61,6 +65,7 @@ class CanvasController extends GetxController {
 
   final RxList<TableWidget> _tables = <TableWidget>[].obs;
   List<TableWidget> get tables => _tables;
+  RxList<TableWidget> get tablesRx => _tables;
 
   final RxList<TableController> _usedTables = <TableController>[].obs;
   List<TableController> get usedTables => _usedTables;
@@ -104,19 +109,22 @@ class CanvasController extends GetxController {
   }
 
   void clearSelectedTable() {
+    getSelectedTable?.controller.callback?.call();
     if (tables.isNotEmpty) {
       for (final table in tables) {
         if (table.controller.getIsSelected) {
+          table.controller.callback?.call();
           table.controller.setIsSelected = false;
         }
+      }
+      for (var element in tables) {
+        element.controller.callback?.call();
       }
       heightTEC.clear();
       widthTEC.clear();
       update([
-        GridConstants.gridCanvasId,
-        GridConstants.gridCanvasTableId,
         GridConstants.gridSidebarTablePropsId,
-        GridConstants.gridSidebarBarTableListId,
+        GridConstants.gridCanvasId,
       ]);
     }
   }
@@ -134,10 +142,11 @@ class CanvasController extends GetxController {
         _tables.assignAll(l);
       }
     }
-    print("selectTable: ${ctr.getSize}");
+    ctr.callback?.call();
+
+    logger("selectTable: ${ctr.getSize}");
     update([
       GridConstants.gridCanvasId,
-      GridConstants.gridCanvasTableId,
       GridConstants.gridSidebarTablePropsId,
     ]);
   }

@@ -17,97 +17,39 @@ class GridCanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CanvasController>(
-      id: GridConstants.gridCanvasId,
-      builder: (ctr) => GridPaper(
-        key: GlobalKeyConstants.canvasGridKey,
-        divisions: 1,
-        color: GridDecorations.defaultGridColor,
-        interval: GridSettingsConstants.defaultGridInterval,
-        subdivisions: GridSettingsConstants.defaultGridSubdivision,
-        child: ColoredBox(
-          color: GridDecorations.defaultBackgroundColor,
-          child: Stack(
-            children: [
-              if (ctr.tables.isEmpty)
-                Center(
-                    child: Text(
-                  'Add tables',
-                  style: Theme.of(context).textTheme.headline1,
-                )),
-              //Handles the outside click to deselect the selected table
-              GestureDetector(
-                  onTap: ctr.clearSelectedTable,
-                  child: Container(color: Colors.transparent)),
-              for (var table in ctr.tables)
-                Stack(
-                  children: [
-                    Positioned(
-                        top: table.controller.getOffset.dy,
-                        left: table.controller.getOffset.dx,
-                        child: DraggableWidget(table: table)),
-                    Positioned(
-                        top: table.controller.getOffset.dy - 10,
-                        left: table.controller.getOffset.dx -
-                            10 +
-                            table.controller.getSize.width / 2,
-                        child: GestureDetector(
-                            onVerticalDragUpdate: (details) {
-                              const subtract = 10;
-                              final lcPosition = details.localPosition;
-                              Offset wentUpTo = Offset(lcPosition.dx,
-                                      (lcPosition.dy - subtract).abs())
-                                  .toCellIndex;
-
-                              bool isGoingUp = details.delta.dy < 0;
-                              if (details.delta.dy == 0.0) {
-                                return;
-                              }
-                              DragDirection newDragDir = dragDirection;
-                              if (newDragDir == DragDirection.none) {
-                                if (isGoingUp) {
-                                  newDragDir = DragDirection.up;
-                                } else {
-                                  newDragDir = DragDirection.down;
-                                }
-                                dragDirection = newDragDir;
-                                return;
-                              }
-                              if (isGoingUp) {
-                                newDragDir = DragDirection.up;
-                              } else {
-                                newDragDir = DragDirection.down;
-                              }
-
-                              if (newDragDir != dragDirection) {
-                                dragDirection = newDragDir;
-                                print("Direction Changed to $newDragDir");
-                                // oldDy = 0;
-                                reversed = true;
-                                _handleDirChange(table, wentUpTo);
-                              } else {
-                                _handleResize(table, wentUpTo);
-                              }
-                            },
-                            onTap: () {
-                              final RenderBox? renderBox = GlobalKeyConstants
-                                  .canvasGridKey.currentContext
-                                  ?.findRenderObject() as RenderBox?;
-                              print(
-                                  "renderBox: ${GlobalKeyConstants.canvasGridKey.getPosition}");
-                            },
-                            onVerticalDragEnd: (details) {
-                              dragDirection = DragDirection.none;
-                              oldDy = 0;
-                              reversed = false;
-                              reversedAt = 0;
-                            },
-                            child: const Icon(
-                              Icons.circle,
-                            ))),
-                  ],
-                ),
-            ],
+    return RepaintBoundary(
+      child: GetBuilder<CanvasController>(
+        id: GridConstants.gridCanvasId,
+        builder: (ctr) => GridPaper(
+          key: GlobalKeyConstants.canvasGridKey,
+          divisions: 1,
+          color: GridDecorations.defaultGridColor,
+          interval: GridSettingsConstants.defaultGridInterval,
+          subdivisions: GridSettingsConstants.defaultGridSubdivision,
+          child: ColoredBox(
+            color: GridDecorations.defaultBackgroundColor,
+            child: Stack(
+              children: [
+                if (ctr.tables.isEmpty)
+                  Center(
+                      child: Text(
+                    'Add tables',
+                    style: Theme.of(context).textTheme.headline1,
+                  )),
+                //Handles the outside click to deselect the selected table
+                GestureDetector(
+                    onTap: ctr.clearSelectedTable,
+                    child: Container(color: Colors.transparent)),
+                for (var table in ctr.tables)
+                  RepaintBoundary(
+                    child: Stack(
+                      children: [
+                        table,
+                      ],
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -116,10 +58,10 @@ class GridCanvas extends StatelessWidget {
 
   void _handleDirChange(TableWidget table, Offset wentUpTo) {
     int dy = wentUpTo.dy.toInt();
-    print('DIR_CHANGE');
-    // print('dy: $dy');
-    // print('oldDy: $oldDy');
-    // print('DIR_CHANGE');
+    logger('DIR_CHANGE');
+    // logger('dy: $dy');
+    // logger('oldDy: $oldDy');
+    // logger('DIR_CHANGE');
     if (dy > oldDy) {
       if (dragDirection == DragDirection.up) {
         // table.controller.changePositionByIndex(Offset(
@@ -142,10 +84,10 @@ class GridCanvas extends StatelessWidget {
   void _handleResize(TableWidget table, Offset wentUpTo) {
     int dy = wentUpTo.dy.toInt();
     if (!reversed) {
-      // print('RESIZE');
-      // print('dy: $dy');
-      // print('oldDy: $oldDy');
-      // print('RESIZE');
+      // logger('RESIZE');
+      // logger('dy: $dy');
+      // logger('oldDy: $oldDy');
+      // logger('RESIZE');
       if (dy > oldDy) {
         if (dragDirection == DragDirection.up) {
           // table.controller.changePositionByIndex(Offset(
@@ -166,11 +108,11 @@ class GridCanvas extends StatelessWidget {
     } else {
       int dy = wentUpTo.dy.toInt();
 
-      print(
+      logger(
           'HANDLE_REVERSED, Reversed At => $reversedAt, dy => $dy, oldDy => $oldDy');
       if (dy > reversedAt) {
         if (dragDirection == DragDirection.up) {
-          print('UP');
+          logger('UP');
           // table.controller.changePositionByIndex(Offset(
           //     table.controller.getOffset.toCellIndex.dx,
           //     table.controller.getOffset.toCellIndex.dy - 1.toDouble()));
@@ -178,7 +120,7 @@ class GridCanvas extends StatelessWidget {
           //     .onResizeTableByCellIndex(addingHeight: 1.toDouble());
           // oldDy = dy;
         } else {
-          print('DOWN');
+          logger('DOWN');
           // table.controller.changePositionByIndex(Offset(
           //     table.controller.getOffset.toCellIndex.dx,
           //     table.controller.getOffset.toCellIndex.dy + 1.toDouble()));
@@ -215,10 +157,10 @@ enum DragDirection { up, down, none }
 //                                 } else {
 //                                   dragDir = DragDirection.down;
 //                                 }
-//                                 // print("reversed: $reversed");
-//                                 // print("isGoingUp: $isGoingUp");
-//                                 print("oldDragDir: $dragDirection");
-//                                 print("dragDir: $dragDir");
+//                                 // logger("reversed: $reversed");
+//                                 // logger("isGoingUp: $isGoingUp");
+//                                 logger("oldDragDir: $dragDirection");
+//                                 logger("dragDir: $dragDir");
 //
 //                                 if (dragDir != dragDirection) {
 //                                   // oldDy = 0;
@@ -229,15 +171,15 @@ enum DragDirection { up, down, none }
 //                                 //   reversed = false;
 //                                 //   oldDy = 0;
 //                                 // }
-//                                 // print(
+//                                 // logger(
 //                                 //     'update ${details.globalPosition}, $isGoingUp, startDy: $startDy, delta: ${details.delta.dy}, didChangeDirection: ${details.globalPosition.dy != startDy}');
-//                                 print("oldDy: $oldDy");
-//                                 print("wentUpTo1: $wentUpTo1");
+//                                 logger("oldDy: $oldDy");
+//                                 logger("wentUpTo1: $wentUpTo1");
 //                                 if (isGoingUp1) {
 //                                   //dy ni yaxlitla
 //                                   int dy = wentUpTo1.dy.toInt();
 //                                   // if (dy < 0) dy = 0;
-//                                   print('going up, dy: $dy');
+//                                   logger('going up, dy: $dy');
 //                                   // tepaga dy chiqib pasga dy qush
 //                                   if (dy > oldDy) {
 //                                     table.controller.changePositionByIndex(
@@ -257,7 +199,7 @@ enum DragDirection { up, down, none }
 //                                   int dy = wentUpTo1.dy.toInt();
 //                                   // if (dy < 0) dy = 0;
 //
-//                                   print('going down dy: $dy');
+//                                   logger('going down dy: $dy');
 //                                   // tepaga dy chiqib pasga dy qush
 //                                   if (dy > oldDy) {
 //                                     table.controller.changePositionByIndex(
@@ -275,16 +217,16 @@ enum DragDirection { up, down, none }
 //                                 }
 //                               },
 //                               onVerticalDragDown: (details) {
-//                                 print('down: ${details.localPosition}');
+//                                 logger('down: ${details.localPosition}');
 //                               },
 //                               onVerticalDragStart: (details) {
-//                                 print('start: ${details.kind}');
+//                                 logger('start: ${details.kind}');
 //                               },
 //                               onVerticalDragCancel: () {
-//                                 print('cancel');
+//                                 logger('cancel');
 //                               },
 //                               onVerticalDragEnd: (details) {
-//                                 // print('onVerticalDragEnd');
+//                                 // logger('onVerticalDragEnd');
 //                                 oldDy = 0;
 //                                 dragDirection = DragDirection.none;
 //                               },
@@ -294,13 +236,13 @@ enum DragDirection { up, down, none }
 
 //XGestureDetector(
 //                             onMoveUpdate: (details) {
-//                               // print('onMoveUpdate pointer ${details.pointer}');
-//                               // print('onMoveUpdate delta ${details.delta}');
-//                               // print(
+//                               // logger('onMoveUpdate pointer ${details.pointer}');
+//                               // logger('onMoveUpdate delta ${details.delta}');
+//                               // logger(
 //                               //     'onMoveUpdate localDelta ${details.localDelta}');
-//                               // print(
+//                               // logger(
 //                               //     'onMoveUpdate localPos ${details.localPos}');
-//                               // print(
+//                               // logger(
 //                               //     'onMoveUpdate position ${details.position}');
 //                               const subtract = 10;
 //                               final lcPosition = details.localPos;
@@ -308,13 +250,13 @@ enum DragDirection { up, down, none }
 //                                       (lcPosition.dy - subtract).abs())
 //                                   .toCellIndex;
 //                               bool isGoingUp = details.delta.dy < 0;
-//                               print("reversed: $reversed");
-//                               print("isGoingUp: $isGoingUp");
+//                               logger("reversed: $reversed");
+//                               logger("isGoingUp: $isGoingUp");
 //                               if (isGoingUp != reversed) {
 //                                 reversed = true;
 //                                 oldDy = 0;
 //                               }
-//                               // print(
+//                               // logger(
 //                               //     'update ${details.globalPosition}, $isGoingUp, startDy: $startDy, delta: ${details.delta.dy}, didChangeDirection: ${details.globalPosition.dy != startDy}');
 //                               if (isGoingUp) {
 //                                 if (reversed) {
@@ -323,7 +265,7 @@ enum DragDirection { up, down, none }
 //                                 }
 //                                 //dy ni yaxlitla
 //                                 int dy = wentUpTo.dy.toInt();
-//                                 // print('going up, dy: $dy');
+//                                 // logger('going up, dy: $dy');
 //                                 // tepaga dy chiqib pasga dy qush
 //                                 if (dy > oldDy) {
 //                                   table.controller.changePositionByIndex(Offset(
@@ -339,7 +281,7 @@ enum DragDirection { up, down, none }
 //                                 //dy ni yaxlitla
 //
 //                                 int dy = wentUpTo.dy.toInt();
-//                                 // print('going down $dy');
+//                                 // logger('going down $dy');
 //                                 // tepaga dy chiqib pasga dy qush
 //                                 if (dy > oldDy) {
 //                                   table.controller.changePositionByIndex(Offset(
@@ -367,8 +309,8 @@ enum DragDirection { up, down, none }
 //                                         (lcPosition.dy - subtract).abs())
 //                                     .toCellIndex;
 //                                 bool isGoingUp = details.delta.dy < 0;
-//                                 // print("reversed: $reversed");
-//                                 // print(
+//                                 // logger("reversed: $reversed");
+//                                 // logger(
 //                                 //     'update ${details.globalPosition}, $isGoingUp, startDy: $startDy, delta: ${details.delta.dy}, didChangeDirection: ${details.globalPosition.dy != startDy}');
 //                                 if (isGoingUp) {
 //                                   if (reversed) {
@@ -377,7 +319,7 @@ enum DragDirection { up, down, none }
 //                                   }
 //                                   //dy ni yaxlitla
 //                                   int dy = wentUpTo.dy.toInt();
-//                                   // print('going up, dy: $dy');
+//                                   // logger('going up, dy: $dy');
 //                                   // tepaga dy chiqib pasga dy qush
 //                                   if (dy > oldDy) {
 //                                     table.controller.changePositionByIndex(
@@ -395,7 +337,7 @@ enum DragDirection { up, down, none }
 //                                 } else {
 //                                   //dy ni yaxlitla
 //                                   int dy = wentUpTo.dy.toInt();
-//                                   // print('going down $dy');
+//                                   // logger('going down $dy');
 //                                   // tepaga dy chiqib pasga dy qush
 //                                   if (dy > oldDy) {
 //                                     table.controller.changePositionByIndex(
@@ -413,16 +355,16 @@ enum DragDirection { up, down, none }
 //                                 }
 //                               },
 //                               onVerticalDragDown: (details) {
-//                                 print('down: ${details.localPosition}');
+//                                 logger('down: ${details.localPosition}');
 //                               },
 //                               onVerticalDragStart: (details) {
-//                                 print('start: ${details.kind}');
+//                                 logger('start: ${details.kind}');
 //                               },
 //                               onVerticalDragCancel: () {
-//                                 print('cancel');
+//                                 logger('cancel');
 //                               },
 //                               onVerticalDragEnd: (details) {
-//                                 // print('onVerticalDragEnd');
+//                                 // logger('onVerticalDragEnd');
 //                                 oldDy = 0;
 //                                 reversed = false;
 //                               },

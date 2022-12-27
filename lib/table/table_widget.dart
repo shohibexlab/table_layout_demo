@@ -5,63 +5,127 @@ import 'package:table_layout_demo/table/table_controller.dart';
 
 import '../constants.dart';
 
-class TableWidget extends StatelessWidget {
+class TableWidget extends StatefulWidget {
   final TableController controller;
   final VoidCallback? onTap;
   bool? isDisabled;
+  bool isPositioned = true;
   TableWidget(
-      {Key? key, required this.controller, this.onTap, this.isDisabled = false})
+      {Key? key,
+      required this.controller,
+      this.onTap,
+      this.isDisabled = false,
+      this.isPositioned = true})
       : super(key: key) {
     isDisabled ?? false;
   }
 
   @override
+  State<TableWidget> createState() => _TableWidgetState();
+}
+
+class _TableWidgetState extends State<TableWidget> {
+  ValueNotifier<TableController>? ctr;
+  @override
+  void initState() {
+    super.initState();
+    ctr = ValueNotifier(widget.controller);
+    widget.controller.setCallback = () {
+      logger("Call back called");
+      setState(() {});
+    };
+  }
+
+  @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TableWidget(TABLE_ID: ${controller.tableId})';
+    return 'TableWidget(TABLE_ID: ${widget.controller.tableId})';
+  }
+
+  void onPanUpdate(DragUpdateDetails details) {
+    widget.controller.changePosition(Offset(
+        details.globalPosition.dx - widget.controller.getSize.width / 2,
+        details.globalPosition.dy - widget.controller.getSize.height / 2));
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CanvasController>(
-        id: GridConstants.gridCanvasTableId,
-        builder: (ctr) {
-          String tableName = controller.getTableName;
-          return InkWell(
-            onTap: isDisabled!
-                ? null
-                : (onTap ?? () => CanvasController.to.selectTable(controller)),
-            child: Opacity(
-              opacity: isDisabled! ? 0.5 : 1,
-              child: SizedBox(
-                width: controller.getSize.width,
-                height: controller.getSize.height,
-                child: DecoratedBox(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        borderRadius: _getRadius(),
-                        color: _getColor()),
-                    child: Center(
-                        child: Text(tableName,
-                            style:
-                                controller.getTableDecoration.getTextStyle))),
-              ),
-            ),
-          );
-        });
+    if (widget.isPositioned) {
+      return _getPositionedWidget();
+    }
+    return _getPressableTable();
+  }
+
+  Widget _getPositionedWidget() {
+    bool isSelected = widget.controller.getIsSelected;
+    if (isSelected) {
+      return Positioned(
+          top: widget.controller.getOffset.dy,
+          left: widget.controller.getOffset.dx,
+          width: widget.controller.getSize.width,
+          height: widget.controller.getSize.height,
+          child: GestureDetector(
+              onPanUpdate: onPanUpdate, child: _getPressableTable()));
+    }
+    return Positioned(
+      top: widget.controller.getOffset.dy,
+      left: widget.controller.getOffset.dx,
+      width: widget.controller.getSize.width,
+      height: widget.controller.getSize.height,
+      child: GestureDetector(
+          onPanStart: (details) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                action: SnackBarAction(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).clearSnackBars();
+                  },
+                  label: "Close",
+                ),
+                content: const Text(
+                    "You can only drag selected tables. Please select the table first.")));
+          },
+          child: _getPressableTable()),
+    );
+  }
+
+  Widget _getPressableTable() {
+    String tableName = widget.controller.getTableName;
+    return GestureDetector(
+      onTap: widget.isDisabled!
+          ? null
+          : (widget.onTap ??
+              () => CanvasController.to.selectTable(widget.controller)),
+      child: Opacity(
+        opacity: widget.isDisabled! ? 0.5 : 1,
+        child: SizedBox(
+          width: widget.controller.getSize.width,
+          height: widget.controller.getSize.height,
+          child: DecoratedBox(
+              decoration: BoxDecoration(
+                  shape: BoxShape.rectangle,
+                  borderRadius: _getRadius(),
+                  color: _getColor()),
+              child: Center(
+                  child: Text(tableName,
+                      style:
+                          widget.controller.getTableDecoration.getTextStyle))),
+        ),
+      ),
+    );
   }
 
   Color _getColor() {
-    if (controller.getIsSelected) {
-      return controller.getTableDecoration.getActiveBgColor;
+    if (widget.controller.getIsSelected) {
+      return widget.controller.getTableDecoration.getActiveBgColor;
     } else {
-      return controller.getTableDecoration.getInactiveBgColor;
+      return widget.controller.getTableDecoration.getInactiveBgColor;
     }
   }
 
   BorderRadiusGeometry _getRadius() {
-    switch (controller.getTableShape) {
+    switch (widget.controller.getTableShape) {
       case TableShape.circle:
-        return BorderRadius.circular(controller.getSize.width / 2);
+        return BorderRadius.circular(widget.controller.getSize.width / 2);
       case TableShape.rectangle:
       default:
         return BorderRadius.zero;
