@@ -5,7 +5,6 @@ import 'package:table_layout_demo/table/table_widget.dart';
 import 'package:table_layout_demo/utils.dart';
 import '../canvas_controller.dart';
 import '../constants.dart';
-import 'draggable_widget.dart';
 
 class GridCanvas extends StatelessWidget {
   GridCanvas({super.key});
@@ -18,37 +17,32 @@ class GridCanvas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
-      child: GetBuilder<CanvasController>(
-        id: GridConstants.gridCanvasId,
-        builder: (ctr) => GridPaper(
-          key: GlobalKeyConstants.canvasGridKey,
-          divisions: 1,
-          color: GridDecorations.defaultGridColor,
-          interval: GridSettingsConstants.defaultGridInterval,
-          subdivisions: GridSettingsConstants.defaultGridSubdivision,
-          child: ColoredBox(
+      child: GridPaper(
+        key: GlobalKeyConstants.canvasGridKey,
+        divisions: 1,
+        color: GridDecorations.defaultGridColor,
+        interval: GridSettingsConstants.defaultGridInterval,
+        subdivisions: GridSettingsConstants.defaultGridSubdivision,
+        child: GetBuilder<CanvasController>(
+          id: GridConstants.gridCanvasId,
+          builder: (ctr) => ColoredBox(
             color: GridDecorations.defaultBackgroundColor,
-            child: Stack(
-              children: [
-                if (ctr.tables.isEmpty)
-                  Center(
-                      child: Text(
-                    'Add tables',
-                    style: Theme.of(context).textTheme.headline1,
-                  )),
-                //Handles the outside click to deselect the selected table
-                GestureDetector(
-                    onTap: ctr.clearSelectedTable,
-                    child: Container(color: Colors.transparent)),
-                for (var table in ctr.tables)
-                  RepaintBoundary(
-                    child: Stack(
-                      children: [
-                        table,
-                      ],
-                    ),
-                  ),
-              ],
+            child: RepaintBoundary(
+              child: Stack(
+                children: [
+                  if (ctr.tables.isEmpty)
+                    Center(
+                        child: Text(
+                      'Add tables',
+                      style: Theme.of(context).textTheme.headline1,
+                    )),
+                  //// Handles the outside click to deselect the selected table
+                  GestureDetector(
+                      onTap: ctr.clearSelectedTable,
+                      child: Container(color: Colors.transparent)),
+                  ...ctr.tables
+                ],
+              ),
             ),
           ),
         ),

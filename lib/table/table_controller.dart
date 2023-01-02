@@ -285,7 +285,6 @@ class TableController extends ValueNotifier<TableData> {
     if (canvasPosition != null) {
       Offset off = Offset(o.dx - canvasPosition.dx, o.dy - canvasPosition.dy);
 
-      // logger("Initial Offset: $off");
       final yRemainder =
           (off.dy % GridSettingsConstants.defaultGridCellSize.height);
       final xRemainder =
@@ -319,7 +318,6 @@ class TableController extends ValueNotifier<TableData> {
         off = Offset(off.dx, dy);
       }
 
-      // logger("Final Offset: $off");
       //Check if the table goes off Canvas boundaries
       if (!GridSettingsConstants.canItemGoOffCanvasBoundaries) {
         //Left

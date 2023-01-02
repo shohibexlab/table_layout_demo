@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
-void logger(dynamic text) {
+void logger(dynamic text, [String hint = "LOGGER"]) {
   if (kDebugMode) {
-    print("LOGGER");
+    print(hint);
     print(text);
-    print("LOGGER");
+    print(hint);
   }
 }

@@ -94,7 +94,10 @@ class _TableWidgetState extends State<TableWidget> {
       onTap: widget.isDisabled!
           ? null
           : (widget.onTap ??
-              () => CanvasController.to.selectTable(widget.controller)),
+              () {
+                CanvasController.to.selectTable(widget.controller);
+                setState(() {});
+              }),
       child: Opacity(
         opacity: widget.isDisabled! ? 0.5 : 1,
         child: SizedBox(

@@ -13,8 +13,7 @@ void main() {
   Get.lazyPut(() => CanvasController());
   Get.lazyPut(() => GeneralTableController());
   runApp(const MaterialApp(
-      // showPerformanceOverlay: true,
-      home: Material(child: Homepage())));
+      showPerformanceOverlay: false, home: Material(child: Homepage())));
 }
 
 class Homepage extends StatelessWidget {

@@ -67,45 +67,27 @@ class CanvasController extends GetxController {
   List<TableWidget> get tables => _tables;
   RxList<TableWidget> get tablesRx => _tables;
 
-  final RxList<TableController> _usedTables = <TableController>[].obs;
-  List<TableController> get usedTables => _usedTables;
-
   bool isTableUsed(TableController ctr) {
-    return usedTables.any((element) => element.tableId == ctr.tableId);
+    return tables.any((element) => element.controller.tableId == ctr.tableId);
   }
 
   void addTable(TableController ctr) {
-    for (var element in tables) {
-      element.controller.setIsSelected = false;
-    }
-    _usedTables.add(ctr);
     _tables.add(TableWidget(controller: ctr));
     selectTable(ctr, swap: false);
-    update(
-        [GridConstants.gridCanvasId, GridConstants.gridSidebarBarTableListId]);
+    update([GridConstants.gridSidebarBarTableListId]);
   }
 
   void removeTable() {
-    _usedTables.removeWhere(
-        (element) => element.tableId == getSelectedTable?.controller.tableId);
     _tables.removeWhere((element) =>
         element.controller.tableId == getSelectedTable?.controller.tableId);
     heightTEC.clear();
     widthTEC.clear();
+
     update([
       GridConstants.gridCanvasId,
       GridConstants.gridSidebarBarTableListId,
       GridConstants.gridSidebarTablePropsId,
     ]);
-  }
-
-  set _setSelectedTable(TableController value) {
-    for (final table in tables) {
-      if (table.controller.getIsSelected) {
-        table.controller.setIsSelected = false;
-      }
-    }
-    value.setIsSelected = true;
   }
 
   void clearSelectedTable() {
@@ -130,7 +112,11 @@ class CanvasController extends GetxController {
   }
 
   void selectTable(TableController ctr, {bool swap = true}) {
-    _setSelectedTable = ctr;
+    if (getSelectedTable != null) {
+      getSelectedTable!.controller.callback?.call();
+      getSelectedTable!.controller.setIsSelected = false;
+    }
+    ctr.setIsSelected = true;
     heightTEC.text = ctr.getSize.toCellIndex.height.toString();
     widthTEC.text = ctr.getSize.toCellIndex.width.toString();
     if (swap && tables.length >= 2) {
@@ -142,13 +128,9 @@ class CanvasController extends GetxController {
         _tables.assignAll(l);
       }
     }
-    ctr.callback?.call();
-
-    logger("selectTable: ${ctr.getSize}");
-    update([
-      GridConstants.gridCanvasId,
-      GridConstants.gridSidebarTablePropsId,
-    ]);
+    // ctr.callback?.call();
+    logger("selectTable: ${ctr.tableId}");
+    update([GridConstants.gridCanvasId, GridConstants.gridSidebarTablePropsId]);
   }
 
   @override
@@ -163,6 +145,12 @@ class CanvasController extends GetxController {
       if (widthTEC.text.endsWith(".0")) {
         widthTEC.text = widthTEC.text.substring(0, widthTEC.text.length - 2);
       }
+    });
+
+    _tables.listen((p0) {
+      logger("tables OLD: $tables");
+      logger("tables: $p0");
+      //New added
     });
   }
 
