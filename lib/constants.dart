@@ -16,14 +16,13 @@ class GridSettingsConstants {
   ///
   /// Default to: (x = 120, y = 10)
   static Offset defaultGridCells =
-      const Offset(120, 70); // Number of pixels in the grid x and y
+      const Offset(80, 70); // Number of pixels in the grid x and y
 
   static Size defaultGridCellSize = const Size(10, 10);
 
   /// Makes 1 cell [_defaultGridCellSize.height] pixels
   static int get defaultGridSubdivision =>
       defaultGridInterval ~/ defaultGridCellSize.height;
-  static set setDefaultGridCellSize(Size size) => defaultGridCellSize = size;
   static Size get defaultTableSize => Size(defaultGridCellSize.width * 8,
       defaultGridCellSize.height * 8); // 8 is pixels of table
   static double defaultSidebarWidth = 300;
@@ -37,6 +36,7 @@ class GridConstants {
 }
 
 class GridDecorations {
-  static Color defaultGridColor = Colors.black26;
+  static Color defaultGridColor = Colors.black12;
+  static String? defaultGridBackgroundImage = null; //"assets/floor.jpg";
   static Color defaultBackgroundColor = Colors.black12;
 }
