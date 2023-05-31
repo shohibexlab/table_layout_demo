@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:table_layout_demo/general_table_controller.dart';
-import 'package:table_layout_demo/table/table_widget.dart';
-import 'package:table_layout_demo/utils.dart';
-import '../canvas_controller.dart';
-import '../constants.dart';
+import 'package:table_layout_demo/manager/controllers/controllers.dart';
+import 'package:table_layout_demo/ui/spaced_row.dart';
+import 'package:table_layout_demo/utils/utils.dart';
 
 class GridCanvas extends StatelessWidget {
   GridCanvas({super.key});
@@ -49,7 +47,24 @@ class GridCanvas extends StatelessWidget {
                     GestureDetector(
                         onTap: ctr.clearSelectedTable,
                         child: Container(color: Colors.transparent)),
-                    ...ctr.tables
+                    ...ctr.tables,
+                    if (GridSettingsConstants.columnCount > 1)
+                      SpacedRow(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        horizontalSpace: GridSettingsConstants.columnGutter,
+                        children: [
+                          for (int i = 0;
+                              i < GridSettingsConstants.columnCount;
+                              i++)
+                            Expanded(
+                              child: Container(
+                                height: double.infinity,
+                                color: GridSettingsConstants.columnColor
+                                    .withOpacity(.2),
+                              ),
+                            ),
+                        ],
+                      )
                   ],
                 ),
               ),

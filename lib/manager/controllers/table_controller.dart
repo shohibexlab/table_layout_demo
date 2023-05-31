@@ -1,116 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:table_layout_demo/utils.dart';
-import '../canvas_controller.dart';
-import '../constants.dart';
-
-enum TableShape {
-  rectangle,
-  circle,
-}
-
-class TableDecoration {
-  Color? activeBgColor;
-  Color? inactiveBgColor;
-  TableShape? tableShape;
-  TextStyle? textStyle;
-
-  Color get getActiveBgColor => activeBgColor!;
-  Color get getInactiveBgColor => inactiveBgColor!;
-  TableShape get getTableShape => tableShape!;
-  TextStyle? get getTextStyle => textStyle;
-
-  void defaultAll() {
-    activeBgColor ??= Colors.blueAccent;
-    inactiveBgColor ??= Colors.black38;
-    tableShape ??= TableShape.rectangle;
-  }
-
-  TableDecoration({
-    this.activeBgColor,
-    this.inactiveBgColor,
-    this.tableShape,
-    this.textStyle,
-  }) {
-    defaultAll();
-  }
-
-  TableDecoration copyWith({
-    Color? activeBgColor,
-    Color? inactiveBgColor,
-    TableShape? tableShape,
-    TextStyle? textStyle,
-  }) {
-    return TableDecoration(
-      activeBgColor: activeBgColor ?? this.activeBgColor,
-      inactiveBgColor: inactiveBgColor ?? this.inactiveBgColor,
-      tableShape: tableShape ?? this.tableShape,
-      textStyle: textStyle ?? this.textStyle,
-    );
-  }
-
-  @override
-  String toString() {
-    return 'TableDecoration(activeBgColor: $activeBgColor, inactiveBgColor: $inactiveBgColor, tableShape: $tableShape, textStyle: $textStyle)';
-  }
-}
-
-class TableData {
-  Size? size;
-  Offset? offset;
-  String? tableName;
-  final UniqueKey key;
-  bool? isSelected;
-  TableDecoration? tableDecoration;
-
-  String tableId;
-
-  Offset get getOffset => offset!;
-  Size get getSize => size!;
-  String get getTableName => tableName!;
-  bool get getIsSelected => isSelected!;
-  TableDecoration get getTableDecoration => tableDecoration!;
-
-  TableData copyWith({
-    double? width,
-    double? height,
-    Offset? offset,
-    UniqueKey? key,
-    String? tableName,
-    bool? isSelected,
-    TableDecoration? tableDecoration,
-  }) {
-    return TableData(
-      size: Size(width ?? size!.width, height ?? size!.height),
-      offset: offset ?? this.offset,
-      key: key ?? this.key,
-      tableName: tableName ?? this.tableName,
-      isSelected: isSelected ?? this.isSelected,
-      tableDecoration: tableDecoration ?? this.tableDecoration,
-      tableId: tableId,
-    );
-  }
-
-  TableData(
-      {this.size,
-      this.offset,
-      required this.key,
-      required this.tableName,
-      required this.isSelected,
-      this.tableDecoration,
-      required this.tableId}) {
-    size ??= GridSettingsConstants.defaultTableSize;
-    offset ??= const Offset(0, 0);
-    tableName ??= 'Table ${key.toString()}';
-    isSelected ??= false;
-    tableDecoration ??= TableDecoration();
-  }
-
-  @override
-  String toString() {
-    return 'TableData(tableId: $tableId, size: $size, offset: $offset, key: $key, tableName: $tableName, isSelected: $isSelected, tableDecoration: ${tableDecoration.toString()})';
-  }
-}
+import 'package:table_layout_demo/manager/models/models.dart';
+import 'package:table_layout_demo/utils/utils.dart';
+import 'controllers.dart';
 
 class TableController extends ValueNotifier<TableData> {
   /// To assign initial position of the widget, use [index] parameter
@@ -156,14 +47,13 @@ class TableController extends ValueNotifier<TableData> {
         );
 
   Size get getSize => value.size!;
-
   Offset get getOffset => value.offset!;
-
   bool get getIsSelected => value.getIsSelected;
   String get getTableName => value.tableName!;
   TableDecoration get getTableDecoration => value.tableDecoration!;
   TableShape get getTableShape => value.tableDecoration!.tableShape!;
   String get tableId => value.tableId;
+  Widget? get child => getTableDecoration.child;
 
   set setOffset(Offset offset) => value = value.copyWith(offset: offset);
 
@@ -342,5 +232,28 @@ class TableController extends ValueNotifier<TableData> {
       }
       setOffset = off;
     }
+  }
+
+  //copyWith
+  TableController copyWith({
+    String? tableId,
+    Function()? callback,
+    Size? size,
+    Offset? offset,
+    TableShape? shape,
+    bool? isSelected,
+    TableDecoration? tableDecoration,
+    String? tableName,
+  }) {
+    return TableController(
+      tableId: tableId ?? this.tableId,
+      callback: callback ?? this.callback,
+      offset: offset,
+      size: size,
+      shape: shape,
+      isSelected: isSelected,
+      tableDecoration: tableDecoration?.copyWith(),
+      tableName: tableName,
+    );
   }
 }

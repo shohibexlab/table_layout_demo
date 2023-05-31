@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:table_layout_demo/table/table_widget.dart';
+import 'package:table_layout_demo/ui/table_widget.dart';
 
-import '../logger.dart';
+import '../utils/logger.dart';
 
 class DraggableWidget extends StatelessWidget {
   final TableWidget table;

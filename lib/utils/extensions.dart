@@ -1,24 +1,14 @@
-import 'dart:developer';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-
-import 'constants.dart';
-
-class Utils {
-  static List<T> swapList<T>(List<T> list, int from, int to) {
-    final List<T> l = [...list];
-    T temp = l[from];
-    l[from] = l[to];
-    l[to] = temp;
-    return l;
-  }
-}
+import 'utils.dart';
 
 extension SizeHelpers on Size {
   Size get toCellIndex => Size(
       width / GridSettingsConstants.defaultGridCellSize.width,
       height / GridSettingsConstants.defaultGridCellSize.height);
+
+  Size get toSizeFromCellIndex => Size(
+      width * GridSettingsConstants.defaultGridCellSize.width,
+      height * GridSettingsConstants.defaultGridCellSize.height);
 }
 
 extension OffsetHelpers on Offset {

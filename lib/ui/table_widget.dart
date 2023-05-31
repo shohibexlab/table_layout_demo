@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:table_layout_demo/canvas_controller.dart';
-import 'package:table_layout_demo/table/table_controller.dart';
-
-import '../constants.dart';
+import 'package:table_layout_demo/manager/controllers/controllers.dart';
+import 'package:table_layout_demo/utils/utils.dart';
 
 class TableWidget extends StatefulWidget {
   final TableController controller;
@@ -90,6 +87,7 @@ class _TableWidgetState extends State<TableWidget> {
 
   Widget _getPressableTable() {
     String tableName = widget.controller.getTableName;
+    Widget? child = widget.controller.child;
     return GestureDetector(
       onTap: widget.isDisabled!
           ? null
@@ -100,18 +98,16 @@ class _TableWidgetState extends State<TableWidget> {
               }),
       child: Opacity(
         opacity: widget.isDisabled! ? 0.5 : 1,
-        child: SizedBox(
-          width: widget.controller.getSize.width,
-          height: widget.controller.getSize.height,
-          child: DecoratedBox(
-              decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  borderRadius: _getRadius(),
-                  color: _getColor()),
-              child: Center(
-                  child: Text(tableName,
-                      style:
-                          widget.controller.getTableDecoration.getTextStyle))),
+        child: ClipRRect(
+          borderRadius: _getRadius(),
+          child: SizedBox(
+            width: widget.controller.getSize.width,
+            height: widget.controller.getSize.height,
+            child: DecoratedBox(
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle, color: _getColor()),
+                child: Center(child: child ?? Text(tableName))),
+          ),
         ),
       ),
     );

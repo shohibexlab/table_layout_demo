@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:table_layout_demo/constants.dart';
-import 'package:table_layout_demo/table/table_controller.dart';
-import 'package:table_layout_demo/table/table_widget.dart';
-import 'package:table_layout_demo/utils.dart';
-
-import 'logger.dart';
-
-export './logger.dart';
+import 'package:table_layout_demo/ui/table_widget.dart';
+import 'package:table_layout_demo/utils/utils.dart';
+import 'controllers.dart';
+export '../../utils/logger.dart';
 
 class CanvasController extends GetxController {
   static CanvasController get to => Get.find();
@@ -124,7 +120,7 @@ class CanvasController extends GetxController {
           .firstWhere((element) => element.controller.tableId == ctr.tableId));
       if (getSelectedTable != null) {
         List<TableWidget> l =
-            Utils.swapList<TableWidget>(tables, indexOf1, tables.length - 1);
+            swapList<TableWidget>(tables, indexOf1, tables.length - 1);
         _tables.assignAll(l);
       }
     }

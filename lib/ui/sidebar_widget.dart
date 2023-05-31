@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:table_layout_demo/canvas_controller.dart';
-import 'package:table_layout_demo/general_table_controller.dart';
-import 'package:table_layout_demo/table/table_controller.dart';
-import 'constants.dart';
-import 'table/table_widget.dart';
+import 'package:table_layout_demo/manager/controllers/controllers.dart';
+import 'package:table_layout_demo/manager/models/models.dart';
+import 'package:table_layout_demo/ui/table_widget.dart';
+import 'package:table_layout_demo/utils/utils.dart';
 
 class SidebarWidget extends StatelessWidget {
   const SidebarWidget({Key? key}) : super(key: key);
@@ -221,16 +220,20 @@ class SidebarWidget extends StatelessWidget {
         tableId: tableId,
         tableName: title,
         tableDecoration: TableDecoration(
+          child: Container(
+              color: Colors.blueAccent,
+              child: Center(
+                child: Text(title),
+              )),
           inactiveBgColor: Colors.black12,
           textStyle: const TextStyle(
             color: Colors.black,
             fontSize: 11,
           ),
         ));
-    final bool isDisabled = CanvasController.to.isTableUsed(tableCtr);
     return TableWidget(
       isPositioned: false,
-      isDisabled: isDisabled,
+      isDisabled: false, // isDisabled,
       onTap: () {
         CanvasController.to.addTable(tableCtr);
       },

@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:table_layout_demo/canvas_controller.dart';
-import 'package:table_layout_demo/general_table_controller.dart';
-import 'package:table_layout_demo/sidebar_widget.dart';
-import 'package:table_layout_demo/utils.dart';
-import 'constants.dart';
-import 'table/grid_canvas_widget.dart';
+import 'package:table_layout_demo/manager/controllers/controllers.dart';
+import 'package:table_layout_demo/ui/sidebar_widget.dart';
+import 'package:table_layout_demo/utils/utils.dart';
+import 'ui/grid_canvas_widget.dart';
 
 void main() {
   debugRepaintRainbowEnabled = false;
@@ -29,33 +27,39 @@ class Homepage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          logger("Canvas Size : ${GlobalKeyConstants.canvasGridKey.getSize}");
+          // logger("Canvas Size : ${GlobalKeyConstants.canvasGridKey.getSize}");
+          // logger(
+          //     "Canvas Size : ${GridSettingsConstants.defaultGridCellSize.width * GridSettingsConstants.defaultGridCells.dx}");
+          // logger(
+          //     "Canvas Size : ${GridSettingsConstants.defaultGridCellSize.height * GridSettingsConstants.defaultGridCells.dy}");
+          // logger(
+          //     "Canvas left top corner : ${CanvasController.to.getLeftTopCorner}");
+          // logger(
+          //     "Canvas right top corner : ${CanvasController.to.getRightTopCorner}");
+          // logger(
+          //     "Canvas left bottom corner : ${CanvasController.to.geLeftBottomCorner}");
+          // logger(
+          //     "Canvas right bottom corner : ${CanvasController.to.getRightBottomCorner}");
+          //
+          // logger("--------------------------");
+          // logger(
+          //     "Selected table size : ${CanvasController.to.getSelectedTable?.controller.getSize}");
+          // logger(
+          //     "Selected table center position : ${CanvasController.to.getSelectedTable?.controller.getCenterOffset}");
+          // logger(
+          //     "Selected table left top corner : ${CanvasController.to.getSelectedTable?.controller.getLeftTopCorner}");
+          // logger(
+          //     "Selected table right top corner : ${CanvasController.to.getSelectedTable?.controller.getRightTopCorner}");
+          // logger(
+          //     "Selected table left bottom corner : ${CanvasController.to.getSelectedTable?.controller.getLeftBottomCorner}");
+          // logger(
+          //     "Table touching top : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasTop}");
+          // logger(
+          //     "Table touching left : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasLeft}");
+          // logger(
+          //     "Table touching right : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasRight}");
           logger(
-              "Canvas left top corner : ${CanvasController.to.getLeftTopCorner}");
-          logger(
-              "Canvas right top corner : ${CanvasController.to.getRightTopCorner}");
-          logger(
-              "Canvas left bottom corner : ${CanvasController.to.geLeftBottomCorner}");
-          logger(
-              "Canvas right bottom corner : ${CanvasController.to.getRightBottomCorner}");
-
-          logger("--------------------------");
-          logger(
-              "Selected table center position : ${CanvasController.to.getSelectedTable?.controller.getCenterOffset}");
-          logger(
-              "Selected table left top corner : ${CanvasController.to.getSelectedTable?.controller.getLeftTopCorner}");
-          logger(
-              "Selected table right top corner : ${CanvasController.to.getSelectedTable?.controller.getRightTopCorner}");
-          logger(
-              "Selected table left bottom corner : ${CanvasController.to.getSelectedTable?.controller.getLeftBottomCorner}");
-          logger(
-              "Table touching top : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasTop}");
-          logger(
-              "Table touching left : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasLeft}");
-          logger(
-              "Table touching right : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasRight}");
-          logger(
-              "Table touching bottom : ${CanvasController.to.getSelectedTable?.controller.isTouchingCanvasBottom}");
+              "Table touching bottom : ${CanvasController.to.getSelectedTable?.controller.getOffset.toCellIndex}");
           // CanvasController.to.getSelectedTable?.controller.moveToBottomLeft();
         },
         label: const Text(

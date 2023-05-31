@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:table_layout_demo/canvas_controller.dart';
-import './utils.dart';
+import 'package:table_layout_demo/utils/utils.dart';
+import 'controllers.dart';
 
 class GeneralTableController extends GetxController {
   static GeneralTableController get to => Get.find();
