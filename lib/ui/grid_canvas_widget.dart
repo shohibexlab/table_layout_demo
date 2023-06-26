@@ -63,7 +63,7 @@ class GridCanvas extends StatelessWidget {
                               ),
                             ),
                         ],
-                      )
+                      ),
                     ...ctr.tables,
                   ],
                 ),
