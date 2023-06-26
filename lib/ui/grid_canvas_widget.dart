@@ -47,7 +47,6 @@ class GridCanvas extends StatelessWidget {
                     GestureDetector(
                         onTap: ctr.clearSelectedTable,
                         child: Container(color: Colors.transparent)),
-                    ...ctr.tables,
                     if (GridSettingsConstants.columnCount > 1)
                       SpacedRow(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -65,6 +64,7 @@ class GridCanvas extends StatelessWidget {
                             ),
                         ],
                       )
+                    ...ctr.tables,
                   ],
                 ),
               ),
